@@ -1,0 +1,28 @@
+Package: NHMStandardLib
+Type: Package
+Title: What the Package Does (Title Case)
+Version: 0.1.0
+Author: Mark Parker, Irena Francesko
+Maintainer: Zem Solutions <office@zem-solutions.com>
+Description: NHM Standard R Library
+    Helper functions for analysts working with Nation Health Model datasets
+License: All rights reserved
+Encoding: UTF-8
+LazyData: true
+Depends:
+  readxl,
+  openxlsx,
+  xlsx,
+  DBI,
+  RSQLite,
+  dplyr,
+  ggplot2,
+  jsonlite,
+  mapreduce,
+  epiR,
+  gridExtra,
+  data.table,
+  lme4,
+  rmeta,
+  beepr
+RoxygenNote: 7.2.3

@@ -325,7 +325,7 @@ human_rsd  <- function(x){human_numbers(x, smbl = "RSD ")}
 #' d<-data.frame()
 #' d<-rbind(d,data.frame(age=c(18:100),Legend="male",weight=rnorm(83,100,10)))
 #' d<-rbind(d,data.frame(age=c(18:100),Legend="female",weight=rnorm(83,80,5)))
-#' multilinePlot(d,"Random Weight Graph","Age","Weight(kg)","age","weight")
+#' multilinePlot(d,"Random Weight Graph","Age","Weight(kg)",age,weight)
 #'
 #' @export
 multilinePlot <- function(dataSrc,t_title,xlabel,ylabel,xdataName,ydataName,yUnits="",seqB=0,seqE=110,seqBy=10){

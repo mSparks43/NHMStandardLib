@@ -7,7 +7,7 @@
 importDataBase(dbName)
 }
 \arguments{
-\item{dbName}{the number of workers}
+\item{dbName}{the ID of the patient database}
 }
 \value{
 a dataframe containing patient record data in json

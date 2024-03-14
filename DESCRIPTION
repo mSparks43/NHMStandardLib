@@ -1,7 +1,7 @@
 Package: NHMStandardLib
 Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
+Title: NHM Standard R Library
+Version: 1.0.0
 Author: Mark Parker, Irena Francesko
 Maintainer: Zem Solutions <office@zem-solutions.com>
 Description: NHM Standard R Library

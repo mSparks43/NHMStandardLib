@@ -223,7 +223,8 @@ ci95_to_sd<-function(n,l95,u95){
   return(se_to_sd(se_local,n))
 }
 
-  rgbeta <- function(n=1000, mean=0.6, var=0.2, min = -0.6125, max = 1, a=NULL, b=NULL)
+#' @export
+rgbeta <- function(n=1000, mean=0.6, var=0.2, min = -0.6125, max = 1, a=NULL, b=NULL)
   {
     dmin <- mean - min
     dmax <- max - mean

@@ -13,6 +13,7 @@ Depends:
   readxl,
   openxlsx,
   xlsx,
+  stringr,
   DBI,
   RSQLite,
   dplyr,
@@ -24,6 +25,5 @@ Depends:
   data.table,
   lme4,
   rmeta,
-  beepr,
-  stringr
+  beepr
 RoxygenNote: 7.2.3

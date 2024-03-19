@@ -20,16 +20,18 @@ folderInit <- function(){
 ## Database functions
 
 #' import an NHM database into R
-#'
+#' @param dbDir the directory to find the database
 #' @param dbName the ID of the patient database
 #' @return a dataframe containing patient record data in json
 #'
 #' @export
-importDataBase<-function(dbName){
+importNHMDataBase<-function(dbDir,dbName){
+  baseDir <- getwd()
   setwd(dbDir)
   str<-paste("openAccess_NHM_Patients_",dbName,".db",sep = "")
   #connecting file location and r, r now has acces to the info
   connection <- dbConnect(SQLite(), str)
+  setwd(baseDir)
   res <- dbSendQuery(connection, "SELECT * FROM datatable")
   rawData <- dbFetch(res)
   dbClearResult(res)
@@ -43,7 +45,6 @@ importDataBase<-function(dbName){
   #we have directly loaded the data into r
   raw_data<-data_table_df[[2]]
   dbDisconnect(connection)
-  setwd(baseDir)
   return(raw_data)
 }
 

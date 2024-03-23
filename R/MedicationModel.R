@@ -27,3 +27,16 @@ MedicationDatabase <- setRefClass("MedicationDatabase", fields = list(medication
 MedicationDatabase_new<-function(){
   return (MedicationDatabase$new())
 }
+
+#' @export
+getAnnualDosingSet<-function(currentDosing,discontinuation,dayNow,endDay,seperation,usedose){
+  d<-dayNow
+  dv<-c()
+  while(d<endDay){     #thisDiscontinueDay pokupi podatak koji se skladišti u objektu end_1_56 (i drugim) koji se dobija kad dole u f-ju applydose() unesemo koju weibull krivu hocemo da koristimo - ona nam daje dan discontinuation-a
+    dv<-append(dv,d)
+    d<-d+seperation
+  }
+  if(!is.null(dv))
+    currentDosing<-rbind(currentDosing,data.frame(day=dv,dose=usedose,units="mg",discontinuation))
+  return(currentDosing)
+}

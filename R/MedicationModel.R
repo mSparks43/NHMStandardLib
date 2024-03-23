@@ -1,4 +1,4 @@
-
+#' @export
 Medication<-setRefClass("Medication", fields = list(INN = "character",DDD="numeric",ATC="character",getDailyDose="function",getAnnualDose="function"),
                         methods = list(
                           getDailyDose = function(pData) {return (NA)},
@@ -7,7 +7,7 @@ Medication<-setRefClass("Medication", fields = list(INN = "character",DDD="numer
                           getATC = function() {return (ATC)}
                         )
 )
-
+#' @export
 MedicationDatabase <- setRefClass("MedicationDatabase", fields = list(medications = "vector",innIndices="list",numMedications="numeric"),
                                   methods = list(
                                     addMedication = function(med) {

@@ -1,4 +1,22 @@
 #' @export
+getParameters_mapFunction <- function(x) {
+  document<-fromJSON(x)
+  parameter_values<-document[["Parameters"]]
+  parameters<-c("WEIGHT","HEIGHT") #unique(parameter_values$test) #this causes issues because not all patients have e.g. Diabetes
+  sex <- document$Sex
+  age<-c(0:document$age+1)
+  retVal<-data.frame(age,sex,pid=document$ID)
+  for(i in parameters){
+    #i is HEIGHT/WEIGHT
+    thisData<-parameter_values[parameter_values$test==i,c(2,3)]
+    names(thisData)<-c("age",i)
+    retVal <- merge(x = retVal, y = thisData , by="age",all.x = TRUE)
+  }
+  #retVal[is.na(retVal)] <- 0
+  return (retVal)
+}
+
+#' @export
 getEQ5D_mapFunction <- function(x) {
   document<-fromJSON(x)
   ages<-c(0:document$age+1)

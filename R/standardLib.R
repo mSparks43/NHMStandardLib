@@ -150,6 +150,21 @@ saveExcel<-function(filename){
 
 
 ## Helper functions
+
+#' sample normal distribution with min and max
+#'
+#' @param n number of samples
+#' @param mean mean of samples
+#' @param sd Standard Deviation of samples
+#' @param min min of samples
+#' @param max max of samples
+#' @return Samples with given parameters
+#'
+#' @export
+rtruncnorm <- function(n, mean, sd, min = -Inf, max = Inf){
+  qnorm(runif(n, pnorm(min, mean, sd), pnorm(max, mean, sd)), mean, sd)
+}
+
 #' @export
 CONCAT <- function (..., sep = "", collapse = NULL, recycle0 = FALSE){
   .Internal(paste(list(...), sep, collapse, recycle0))

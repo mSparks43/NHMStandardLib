@@ -296,14 +296,14 @@ human_numbers <- function(x = NULL, smbl ="", signif = 1){
       if ( k < 1 ) {
         paste0( y_is_positive, smbl, round(abs(y), signif ))
       } else if ( m < 1){
-        paste0 (y_is_positive, smbl,  k , "k")
+        paste0 (y_is_positive, smbl, format(k, big.mark=".",decimal.mark=",")  , "k")
       } else if (b < 1){
-        paste0 (y_is_positive, smbl, m ,"m")
+        paste0 (y_is_positive, smbl, format(m, big.mark=".",decimal.mark=",") ,"m")
       }else if(tn < 1){
         #paste0 (y_is_positive, smbl, b ,"bn")
-        paste0 (y_is_positive, smbl, b ,"mlrd")
+        paste0 (y_is_positive, smbl, format(b, big.mark=".",decimal.mark=",") ,"mlrd")
       } else {
-        paste0 (y_is_positive, smbl,  comma(tn), "tn")
+        paste0 (y_is_positive, smbl,  format(tn, big.mark=".",decimal.mark=","), "tn")
       }
     } else if (is.na(y) | is.null(y)){
       "-"
@@ -375,12 +375,15 @@ barchartPlot <- function(dataSrc,t_title,xlabel,ylabel,xdataName,ydataName){
 
 #' @export
 #'
-writePlot <- function(fileName,plotFunction){
+writePlot <- function(fileName,plotFunction,use.print=TRUE){
   folderInit()
   setwd(graphDir)
   savename<-paste(fileName,".png")
   png(savename,width=300,height=150, pointsize=20, units = "mm", res = 300)
-  print(plotFunction)
+  if(use.print)
+    print(plotFunction)
+  else
+    plotFunction
   dev.off()
   setwd(baseDir)
 }

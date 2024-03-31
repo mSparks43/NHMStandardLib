@@ -25,5 +25,7 @@ Depends:
   data.table,
   lme4,
   rmeta,
-  beepr
+  beepr,
+  ggforce,
+  grid
 RoxygenNote: 7.2.3

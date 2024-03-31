@@ -92,7 +92,7 @@ PieDonut<-function (data, mapping, start = getOption("PieDonut.start",
                                                                                                                                                                                                                                       1.2), explode = NULL, selected = NULL, explodePos = 0.1,
                     color = "white", pieAlpha = 0.8, donutAlpha = 1, maxx = NULL,
                     showPieName = TRUE, showDonutName = FALSE, title = NULL,
-                    pieLabelSize = 4, donutLabelSize = 3, titlesize = 5, explodePie = TRUE,
+                    pieLabelSize = 3, donutLabelSize = 3, titlesize = 5, explodePie = TRUE,
                     explodeDonut = FALSE, use.label = TRUE, use.labels = TRUE,
                     family = getOption("PieDonut.family", ""))
 {
@@ -418,16 +418,19 @@ theme_no_axes <- function(base.theme = theme_bw()) {
 
 #' @export
 doublePie<-function(data,chart_title,firstCol,secondCol,countCol){
-  group_totals <- mapReduce_reduce(data,c(firstCol),c("sum"),c(count))
+  group_totals <- mapReduce_reduce(data,c(firstCol),c("sum"),c(countCol))
   names(group_totals)[2]<-"count"
-  data[["secondCol_lbl"]]<-CONCAT(data[[secondCol]],"\n",human_numbers(data[[count]]))
+  tTot<-sum(data[[countCol]])
+  data[["secondCol_lbl"]]<-CONCAT(data[[secondCol]],"\n",human_numbers(data[[countCol]]),"\n(",human_numbers((data[[countCol]]*100)/tTot),"%)")
   data[["firstCol_lbl"]]<-NA
   for(setName in unique(data[[firstCol]])){
-    total<-human_numbers(group_totals[group_totals[firstCol]==setName,]$count)
-    data[data[firstCol]==setName,"firstCol_lbl"]<-CONCAT(setName,"\n",total)
+    totalN<-group_totals[group_totals[firstCol]==setName,]$count
+    total<-human_numbers(totalN)
+    data[data[firstCol]==setName,"firstCol_lbl"]<-CONCAT(setName,"\n",total,"\n(",human_numbers((totalN*100)/tTot),"%)")
   }
   PieDonut(data, aes(firstCol_lbl, secondCol_lbl, count={{countCol}}),
            title=chart_title,
+           pieLabelSize = 2, donutLabelSize = 2,
            showRatioDonut = F, showRatioPie = F, showPieName = F,
            r0=0.55, r1=0.9, r2=1.4, labelposition=0, selected=c(1,2,3,4),
            ## if you want more labels, but it will get messy

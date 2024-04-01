@@ -296,14 +296,14 @@ human_numbers <- function(x = NULL, smbl ="", signif = 1){
       if ( k < 1 ) {
         paste0( y_is_positive, smbl, round(abs(y), signif ))
       } else if ( m < 1){
-        paste0 (y_is_positive, smbl, format(k, big.mark=".",decimal.mark=",")  , "hijl")
+        paste0 (y_is_positive, smbl, format(k, big.mark=".",decimal.mark=",")  , " hijl.")
       } else if (b < 1){
-        paste0 (y_is_positive, smbl, format(m, big.mark=".",decimal.mark=",") ,"m")
+        paste0 (y_is_positive, smbl, format(m, big.mark=".",decimal.mark=",") ," mil.")
       }else if(tn < 1){
         #paste0 (y_is_positive, smbl, b ,"bn")
-        paste0 (y_is_positive, smbl, format(b, big.mark=".",decimal.mark=",") ,"mlrd")
+        paste0 (y_is_positive, smbl, format(b, big.mark=".",decimal.mark=",") ," mlrd.")
       } else {
-        paste0 (y_is_positive, smbl,  format(tn, big.mark=".",decimal.mark=","), "tn")
+        paste0 (y_is_positive, smbl,  format(tn, big.mark=".",decimal.mark=","), "tn.")
       }
     } else if (is.na(y) | is.null(y)){
       "-"

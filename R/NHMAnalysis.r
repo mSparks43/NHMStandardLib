@@ -417,7 +417,7 @@ theme_no_axes <- function(base.theme = theme_bw()) {
 }
 
 #' @export
-doublePie<-function(data,chart_title,firstCol,secondCol,countCol){
+doublePie<-function(data,chart_title,firstCol,secondCol,countCol,threshold=0.001){
   group_totals <- mapReduce_reduce(data,c(firstCol),c("sum"),c(countCol))
   names(group_totals)[2]<-"count"
   tTot<-sum(data[[countCol]])
@@ -434,7 +434,7 @@ doublePie<-function(data,chart_title,firstCol,secondCol,countCol){
            showRatioDonut = F, showRatioPie = F, showPieName = F,
            r0=0.55, r1=0.9, r2=1.4, labelposition=0, selected=c(1,2,3,4),
            ## if you want more labels, but it will get messy
-           showRatioThreshold = 0.001,
+           showRatioThreshold = threshold,
            #r0 = 0.05, r1 = 0.5, r2 = 0.9,
            titlesize = 4, start = 3.5)
 }

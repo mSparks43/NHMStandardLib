@@ -296,7 +296,7 @@ human_numbers <- function(x = NULL, smbl ="", signif = 1){
       if ( k < 1 ) {
         paste0( y_is_positive, smbl, round(abs(y), signif ))
       } else if ( m < 1){
-        paste0 (y_is_positive, smbl, format(k, big.mark=".",decimal.mark=",")  , "k")
+        paste0 (y_is_positive, smbl, format(k, big.mark=".",decimal.mark=",")  , "hijl")
       } else if (b < 1){
         paste0 (y_is_positive, smbl, format(m, big.mark=".",decimal.mark=",") ,"m")
       }else if(tn < 1){

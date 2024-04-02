@@ -27,5 +27,6 @@ Depends:
   rmeta,
   beepr,
   ggforce,
-  grid
+  grid,
+  tidyr
 RoxygenNote: 7.2.3

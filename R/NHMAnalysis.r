@@ -147,7 +147,7 @@ PieDonut<-function (data, mapping, start = getOption("PieDonut.start",
   if (!is.factor(df[[pies]]))
     df[[pies]] <- factor(df[[pies]])
   df
-  mainCol = gg_color_hue(nrow(df))
+  mainCol = nhmDefaultColors()# gg_color_hue(nrow(df))
   df$radius = r1
   df$radius[df$focus != 0] = df$radius[df$focus != 0] + df$focus[df$focus !=
                                                                    0]
@@ -414,6 +414,12 @@ theme_no_axes <- function(base.theme = theme_bw()) {
       axis.ticks = element_blank(),
       panel.grid = element_blank()
     )
+}
+
+#' @export
+nhmDefaultColors <- function(){
+  retVal<-c("#6D9DC5","#80DED9","#068D9D","#acf47d","#53599A","#0f6d96","#1c92f4","#09c61a","#30bf9d")
+  return(retVal)
 }
 
 #' @export

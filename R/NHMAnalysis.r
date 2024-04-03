@@ -382,7 +382,12 @@ PieDonut<-function (data, mapping, start = getOption("PieDonut.start",
     print(p1, vp = viewport(height = 1, width = 1))
     print(p3, vp = viewport(height = 1, width = 1))
   } else {
-    p1
+    if (!is.null(title)) {
+      p1 <- p1 + annotate("text", x = 0, y = r3, label = title,
+                          size = titlesize, family = family) + annotate("text", x = 0, y = 0, label = centerTitle,
+                                                                        size = titlesize, family = family)
+    }
+    print(p1)
   }
 }
 getMapping=function(mapping,varname) {
@@ -423,24 +428,77 @@ nhmDefaultColors <- function(){
 }
 
 #' @export
-doublePie<-function(data,chart_title,firstCol,secondCol,countCol,threshold=0.001){
+doublePie<-function(data,chart_title,firstCol,secondCol,countCol,threshold=0.001,fontSize=3,positionThreshold = 0.01){
   group_totals <- mapReduce_reduce(data,c(firstCol),c("sum"),c(countCol))
   names(group_totals)[2]<-"count"
   tTot<-sum(data[[countCol]])
-  data[["secondCol_lbl"]]<-CONCAT(data[[secondCol]],"\n",human_numbers(data[[countCol]]),"\n(",human_numbers((data[[countCol]]*100)/tTot),"%)")
+  if(!is.na(secondCol))
+    data[["secondCol_lbl"]]<-CONCAT(data[[secondCol]],"\n",human_numbers(data[[countCol]]),"\n(",human_numbers((data[[countCol]]*100)/tTot),"%)")
   data[["firstCol_lbl"]]<-NA
   for(setName in unique(data[[firstCol]])){
     totalN<-group_totals[group_totals[firstCol]==setName,]$count
     total<-human_numbers(totalN)
     data[data[firstCol]==setName,"firstCol_lbl"]<-CONCAT(setName,"\n",total,"\n(",human_numbers((totalN*100)/tTot),"%)")
   }
+
+  data[["firstCol_lbl"]]<-factor(data$firstCol_lbl,levels=unique(data$firstCol_lbl))
+  if(!is.na(secondCol)){
+    data[["secondCol_lbl"]]<-factor(data$secondCol_lbl,levels=unique(data$secondCol_lbl))
   PieDonut(data, aes(firstCol_lbl, secondCol_lbl, count={{countCol}}),
            title=chart_title,
-           pieLabelSize = 2, donutLabelSize = 2,
+           pieLabelSize = fontSize, donutLabelSize = fontSize,
            showRatioDonut = F, showRatioPie = F, showPieName = F,
-           r0=0.55, r1=0.9, r2=1.4, labelposition=0, selected=c(1,2,3,4),
+           r0=0.50, r1=1.1, r2=1.7, labelposition=2, selected=c(1,2,3,4),
            ## if you want more labels, but it will get messy
            showRatioThreshold = threshold,
+           labelpositionThreshold = positionThreshold,
            #r0 = 0.05, r1 = 0.5, r2 = 0.9,
-           titlesize = 4, start = 3.5)
+           titlesize = fontSize*1.5, start = 3.5)
+  } else
+    PieDonut(data, aes(firstCol_lbl, count={{countCol}}),
+             title=chart_title,
+             pieLabelSize = fontSize, donutLabelSize = fontSize,
+             showRatioDonut = F, showRatioPie = F, showPieName = F,
+             r0=0.8, r1=1.7, r2=1.8, labelposition=2, selected=c(1,2,3,4),
+             ## if you want more labels, but it will get messy
+             showRatioThreshold = threshold,
+             labelpositionThreshold = positionThreshold,
+             #r0 = 0.05, r1 = 0.5, r2 = 0.9,
+             titlesize = fontSize*1.5, start = 3.5)
+}
+
+#' @export
+populationPyramid<-function(data){
+
+  # Create a basic bar chart for one gender
+  basic_plot <-  ggplot(
+    data,
+    aes(
+      x = Starost,
+      fill = Pol,
+      y = ifelse(
+        test = Pol == "M",
+        yes = -Populacija,
+        no = Populacija
+      )
+    )
+  ) +
+    geom_bar(stat = "identity")+
+    scale_fill_manual(values=nhmDefaultColors())
+
+  # Create population pyramids for both genders and combine them
+  population_pyramid <- basic_plot +
+    scale_y_continuous(
+      labels = abs,
+      limits = max(data$Populacija) * c(-1,1)
+    ) +
+    coord_flip() +
+    theme_minimal() +
+    labs(
+      x = "Starost",
+      y = "Populacija",
+      fill = "Pol",
+      title = "Populacija sa migrenom RS"
+    )
+  return(population_pyramid)
 }

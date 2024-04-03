@@ -349,7 +349,7 @@ multilinePlot <- function(dataSrc,t_title,xlabel,ylabel,xdataName,ydataName,yUni
   ggplot(data = dataSrc, aes(x={{xdataName}}, y = {{ydataName}},color=Legend, linetype = Legend)) +
     geom_line(linewidth=2) +
     scale_x_continuous(breaks = seq(seqB, seqE, by = seqBy)) +
-    scale_color_manual(values=c("#6D9DC5","#80DED9","#068D9D","cyan","#53599A")) +
+    scale_color_manual(values=nhmDefaultColors()) +
     scale_y_continuous(labels = human_num) +
     labs(x=xlabel, y=ylabel, title=t_title) +
     theme(text = element_text(size = 20))
@@ -369,17 +369,18 @@ barchartPlot <- function(dataSrc,t_title,xlabel,ylabel,xdataName,ydataName){
   ggplot(data= dataSrc, aes(x={{xdataName}}, y={{ydataName}}, fill=Legend)) +
     geom_bar(stat='identity', position='dodge') +
     theme(axis.text.x = element_text(angle=90, vjust=0.5, hjust=1))+
+    scale_fill_manual(values=nhmDefaultColors()) +
     labs(x=xlabel, y=ylabel, title=t_title) +
     scale_y_continuous(labels = human_numbers)
 }
 
 #' @export
 #'
-writePlot <- function(fileName,plotFunction,use.print=TRUE){
+writePlot <- function(fileName,plotFunction,use.print=TRUE,aspectRatio=0.5){
   folderInit()
   setwd(graphDir)
   savename<-paste(fileName,".png")
-  png(savename,width=300,height=150, pointsize=20, units = "mm", res = 300)
+  png(savename,width=300,height=(300*aspectRatio), pointsize=20, units = "mm", res = 300)
   if(use.print)
     print(plotFunction)
   else

@@ -503,9 +503,10 @@ populationPyramid<-function(data){
   return(population_pyramid)
 }
 
-#' @export
-#' https://stackoverflow.com/questions/48259930/how-to-create-a-stacked-waterfall-chart-in-r
+#' seeehttps://stackoverflow.com/questions/48259930/how-to-create-a-stacked-waterfall-chart-in-r
 #'
+
+#' @export
 waterFallGraph<-function(data,graphTitle,yTitle,xaxis,category,valueField,threshold=80000000){
   df <-
     data.frame(

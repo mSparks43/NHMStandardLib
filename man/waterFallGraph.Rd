@@ -11,7 +11,8 @@ waterFallGraph(
   xaxis,
   category,
   valueField,
-  threshold = 8e+07
+  threshold = 8e+07,
+  fontSize = 3
 )
 }
 \description{

@@ -507,7 +507,7 @@ populationPyramid<-function(data){
 #'
 
 #' @export
-waterFallGraph<-function(data,graphTitle,yTitle,xaxis,category,valueField,threshold=80000000){
+waterFallGraph<-function(data,graphTitle,yTitle,xaxis,category,valueField,threshold=80000000,fontSize=3){
   df <-
     data.frame(
       x.axis.Var = data[,xaxis][[1]],
@@ -573,6 +573,7 @@ waterFallGraph<-function(data,graphTitle,yTitle,xaxis,category,valueField,thresh
         label = ifelse(values > threshold,human_numbers(values),""),
         y = rowSums(cbind(start.Bar,values/2))
       ),
+    size = fontSize,
     color = "white",
     fontface = "bold"
   ) +
@@ -586,6 +587,7 @@ waterFallGraph<-function(data,graphTitle,yTitle,xaxis,category,valueField,thresh
         ),
         y = end.Bar+threshold
       ),
+    size = fontSize,
     color = "#4e4d47",
     fontface = "bold"
   ) +
@@ -609,8 +611,9 @@ waterFallGraph<-function(data,graphTitle,yTitle,xaxis,category,valueField,thresh
   ) +
     # \_Theme options to make it look like the original plot ----
   theme(
-    text = element_text(size = 14, color = "#4e4d47"),
-    axis.text = element_text(angle=25,size = 10, color = "#4e4d47", face = "bold", vjust=0.5, hjust=1),
+    text = element_text(size = fontSize*4, color = "#4e4d47"),
+    axis.text.x = element_text(angle=25,size = fontSize*3, color = "#4e4d47", face = "bold", vjust=0.7, hjust=0.5),
+    axis.text.y = element_text(size = fontSize*3, color = "#4e4d47", face = "bold", vjust=0.5, hjust=1),
     #axis.text.y = element_text(margin = margin(r = 0.3, unit = "cm")),
     axis.ticks.x =
       element_line(color =
@@ -624,7 +627,7 @@ waterFallGraph<-function(data,graphTitle,yTitle,xaxis,category,valueField,thresh
     axis.title.x =       element_blank(),
     panel.background =   element_blank(),
     plot.margin =        unit(c(1, 1, 1, 1), "lines"),
-    legend.text =        element_text(size = 10,
+    legend.text =        element_text(size = fontSize*3,
                                       color = "#4e4d47",
                                       face = "bold",
                                       margin = margin(l = 0.25, unit = "cm")
@@ -632,6 +635,6 @@ waterFallGraph<-function(data,graphTitle,yTitle,xaxis,category,valueField,thresh
     legend.title =       element_blank()
   ) +
     scale_y_continuous(labels = human_numbers) +
-    labs(x="xlabel", y=yTitle, title=graphTitle)
+    labs(size = fontSize*4,x="xlabel", y=yTitle, title=graphTitle)
 
 }

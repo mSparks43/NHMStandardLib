@@ -368,12 +368,12 @@ PieDonut<-function (data, mapping, start = getOption("PieDonut.start",
     }
     if (!is.null(title)) {
       p3 <- p3 + annotate("text", x = 0, y = r3, label = title,
-                          size = titlesize, family = family) + annotate("text", x = 0, y = 0, label = centerTitle,
+                          size = 12, family = family) + annotate("text", x = 0, y = 0, label = centerTitle,
                                                                         size = titlesize, family = family)
     }
     else if (showDonutName)
       p3 <- p3 + annotate("text", x = (-1) * r3, y = r3,
-                          label = donuts, hjust = 0, size = titlesize,
+                          label = donuts, hjust = 0, size = 12,
                           family = family)
     p3 <- p3 + theme(text = element_text(family = family))
     p3 <- p3 + annotate("text", x = 0, y = 0, label = centerTitle,
@@ -384,7 +384,7 @@ PieDonut<-function (data, mapping, start = getOption("PieDonut.start",
   } else {
     if (!is.null(title)) {
       p1 <- p1 + annotate("text", x = 0, y = r3, label = title,
-                          size = titlesize, family = family) + annotate("text", x = 0, y = 0, label = centerTitle,
+                          size = 12, family = family) + annotate("text", x = 0, y = 0, label = centerTitle,
                                                                         size = titlesize, family = family)
     }
     print(p1)
@@ -453,7 +453,7 @@ doublePie<-function(data,chart_title,firstCol,secondCol,countCol,threshold=0.001
            showRatioThreshold = threshold,
            labelpositionThreshold = positionThreshold,
            #r0 = 0.05, r1 = 0.5, r2 = 0.9,
-           titlesize = fontSize*1.5, start = 3.5)
+           titlesize = 15, start = 3.5)
   } else
     PieDonut(data, aes(firstCol_lbl, count={{countCol}}),
              title=chart_title,
@@ -464,7 +464,7 @@ doublePie<-function(data,chart_title,firstCol,secondCol,countCol,threshold=0.001
              showRatioThreshold = threshold,
              labelpositionThreshold = positionThreshold,
              #r0 = 0.05, r1 = 0.5, r2 = 0.9,
-             titlesize = fontSize*1.5, start = 3.5)
+             titlesize = 15, start = 3.5)
 }
 
 #' @export

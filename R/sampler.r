@@ -12,7 +12,7 @@ getSampleITTPopulation<-function(dbDir,versionDateName,base_itt_patient){
 
   raw_data<-importNHMDataBase(dbDir,versionDateName)
   #system.time(dt_s<-list( mclapply(raw_data, getPatient,mc.cores = numCores))[[1]])
-  mapReduce_map(raw_data,getPatient)
+  dt_s<-mapReduce_map(raw_data,getPatient)
   retVal<-mapReduce_reduce(dt_s)
   return (retVal)
 }

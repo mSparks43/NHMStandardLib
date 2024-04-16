@@ -4,7 +4,13 @@
 \alias{getSample}
 \title{Get a sample of patient IDs from an NHM database that meet given criteria}
 \usage{
-getSample(dbDir, versionDateName, patient_samples, base_itt_patient)
+getSample(
+  dbDir,
+  versionDateName,
+  patient_samples,
+  base_itt_patient,
+  sampleSize
+)
 }
 \arguments{
 \item{dbDir}{the directory to find the database}

@@ -31,9 +31,11 @@ itt_patient<-function(document,versionDateName){
 #' @return a dataframe containing patient record versionDateName and IDs
 #'
 #'@export
-getSample<-function(dbDir,versionDateName,patient_samples,base_itt_patient){
+getSample<-function(dbDir,versionDateName,patient_samples,base_itt_patient,sampleSize){
   thisSample<-getSampleITTPopulation(dbDir,versionDateName,base_itt_patient)
   set.seed(1234)
+  if(nrow(thisSample)<sampleSize)
+    stop("sampleSize > sample")
   thisSample<-thisSample[sample(nrow(thisSample), sampleSize), ]
   patient_samples<-rbind(patient_samples,thisSample)
   return(patient_samples)

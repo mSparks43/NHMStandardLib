@@ -59,7 +59,7 @@ importNHMDataBaseSampleData<-function(dbDir,versionDateName){
     document<-fromJSON(x)
     if(!itt_patient(document,versionDateName))
       return(data.frame())
-    return (data.frame(x))
+    return (x)
   }
   raw_data<-importNHMDataBase(dbDir,versionDateName)
   #system.time(dt_s<-list( mclapply(raw_data, getdata,mc.cores = numCores))[[1]])

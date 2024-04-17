@@ -3,8 +3,12 @@
 # Zem Solutions, all rights reserved.
 # use `rm(list=ls());roxygen2::roxygenise()` to build
 
+
+pkg.env <- new.env()
 ## base Functions
 
+pkg.env$has_samples <- FALSE
+pkg.env$patient_samples<-data.frame()
 #' get standard folder names for current working directory
 #' @export
 folderInit <- function(){

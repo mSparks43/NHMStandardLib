@@ -17,39 +17,44 @@ getSampleITTPopulation<-function(dbDir,versionDateName,base_itt_patient){
   return (retVal)
 }
 itt_patient<-function(document,versionDateName){
-  inList<-patient_samples[patient_samples$pid==document$ID & patient_samples$versionDateName==versionDateName,]
+  inList<-pkg.env$patient_samples[pkg.env$patient_samples$pid==document$ID & pkg.env$patient_samples$versionDateName==versionDateName,]
   if(length(inList>0))
     return(TRUE)
   return(FALSE)
 }
-
+#' Initialise sampling functions
+#'@export
+initNHMSampling<-function(useSampling=FALSE){
+  pkg.env$has_samples <- useSampling
+  pkg.env$patient_samples<-data.frame()
+}
 #' Get a sample of patient IDs from an NHM database that meet given criteria
 #' @param dbDir the directory to find the database
 #' @param versionDateName the ID of the patient database
-#' @param patient_samples existing patient_samples to append to
 #' @param base_itt_patient A function to test if the patient should be sampled
 #' @return a dataframe containing patient record versionDateName and IDs
-#'
+
 #'@export
-getSample<-function(dbDir,versionDateName,patient_samples,base_itt_patient,sampleSize){
+getNHMSampleIDs<-function(dbDir,versionDateName,base_itt_patient,sampleSize){
+  if(!pkg.env$has_samples)
+    initNHMSampling(useSampling=TRUE)
   thisSample<-getSampleITTPopulation(dbDir,versionDateName,base_itt_patient)
   set.seed(1234)
   if(nrow(thisSample)<sampleSize)
     stop("sampleSize > sample")
   thisSample<-thisSample[sample(nrow(thisSample), sampleSize), ]
-  patient_samples<-rbind(patient_samples,thisSample)
-  return(patient_samples)
+  pkg.env$patient_samples<-rbind(pkg.env$patient_samples,thisSample)
+  return(pkg.env$patient_samples)
 
 }
 
 #' sample an NHM database for patients that meet given criteria
 #' @param dbDir the directory to find the database
 #' @param versionDateName the ID of the patient database
-#' @param base_itt_patient A function to test if the patient should be sampled
 #' @return a dataframe containing patient record versionDateName and IDs
 #'
 #'@export
-sampleData<-function(dbDir,versionDateName,base_itt_patient){
+importNHMDataBaseSampleData<-function(dbDir,versionDateName){
   getdata <- function(x) {
     document<-fromJSON(x)
     if(!itt_patient(document,versionDateName))
@@ -58,7 +63,7 @@ sampleData<-function(dbDir,versionDateName,base_itt_patient){
   }
   raw_data<-importNHMDataBase(dbDir,versionDateName)
   #system.time(dt_s<-list( mclapply(raw_data, getdata,mc.cores = numCores))[[1]])
-  mapReduce_map(raw_data,getdata)
-  retVal<-mapReduce_reduce(dt_s)
-  return (retVal)
+  dt_s<-mapReduce_map(raw_data,getdata)
+  #retVal<-mapReduce_reduce(dt_s)
+  return (dt_s)
 }

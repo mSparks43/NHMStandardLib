@@ -9,6 +9,7 @@ pkg.env <- new.env()
 
 pkg.env$has_samples <- FALSE
 pkg.env$patient_samples<-data.frame()
+pkg.env$g11n<-"sr"
 #' get standard folder names for current working directory
 #' @export
 folderInit <- function(){
@@ -282,7 +283,21 @@ rgbeta <- function(n=1000, mean=0.6, var=0.2, min = -0.6125, max = 1, a=NULL, b=
   }
 ##Graph helpers
 
+#' @export
+setg11n<-function(g11n){
+  pkg.env$g11n<-g11n
+}
+
+
 human_numbers <- function(x = NULL, smbl ="", signif = 1){
+  if(pkg.env$g11n=="sr")
+    return(human_numbers_sr(x,smbl,signif))
+  else if(pkg.env$g11n=="en")
+    return(human_numbers_en(x,smbl,signif))
+  else
+    stop("unknown g11n")
+}
+human_numbers_sr <- function(x = NULL, smbl ="", signif = 1){
   humanity <- function(y){
 
     if (!is.na(y)){
@@ -316,7 +331,39 @@ human_numbers <- function(x = NULL, smbl ="", signif = 1){
 
   sapply(x,humanity)
 }
+human_numbers_en <- function(x = NULL, smbl ="", signif = 1){
+  humanity <- function(y){
 
+    if (!is.na(y)){
+      tn <- round(abs(y) / 1e12, signif)
+      b <- round(abs(y) / 1e9, signif)
+      m <- round(abs(y) / 1e6, signif)
+      k <- round(abs(y) / 1e3, signif)
+
+      if ( y >= 0 ){
+        y_is_positive <- ""
+      } else {
+        y_is_positive <- "-"
+      }
+
+      if ( k < 1 ) {
+        paste0( y_is_positive, smbl, round(abs(y), signif ))
+      } else if ( m < 1){
+        paste0 (y_is_positive, smbl,  k , "k")
+      } else if (b < 1){
+        paste0 (y_is_positive, smbl, m ,"m")
+      }else if(tn < 1){
+        paste0 (y_is_positive, smbl, b ,"bn")
+      } else {
+        paste0 (y_is_positive, smbl,  comma(tn), "tn")
+      }
+    } else if (is.na(y) | is.null(y)){
+      "-"
+    }
+  }
+
+  sapply(x,humanity)
+}
 #' Human readable versions of large numbers GBP
 #'
 

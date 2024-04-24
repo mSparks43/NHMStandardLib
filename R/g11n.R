@@ -51,8 +51,26 @@ getg11n<-function(textSearch){
   return(iRow$text)
 }
 
+getg11nSafeVector<-function(vectortextSearch){
+  if(!is.vector(vectortextSearch))
+    stop("not a vector")
+  for(i in 1:length(vectortextSearch)){
+    vectortextSearch[i]<-getg11nSafe(vectortextSearch[i])
+  }
+  return(vectortextSearch)
+}
+getg11nSafe<-function(textSearch){
+  id<-getg11nID(textSearch)
+  if(is.na(id)|| id<=0)
+    return(textSearch)
+  iRow<-pkg.env$g11n_data[pkg.env$g11n_data$id==id & pkg.env$g11n_data$lang==pkg.env$g11n,]
+  if(nrow(iRow)==0)
+    return(textSearch)
+  return(iRow$text)
+}
 #' @export
 importg11n<-function(file_ndjson){
+  pkg.env$g11n_data<-data.frame()
   v<-lapply(readLines(file_ndjson, n=-1, warn=FALSE), addg11n)
 
 }

@@ -433,19 +433,19 @@ doublePie<-function(data,chart_title,firstCol,secondCol,countCol,threshold=0.001
   names(group_totals)[2]<-"count"
   tTot<-sum(data[[countCol]])
   if(!is.na(secondCol))
-    data[["secondCol_lbl"]]<-CONCAT(data[[secondCol]],"\n",human_numbers(data[[countCol]]),"\n(",human_numbers((data[[countCol]]*100)/tTot),"%)")
+    data[["secondCol_lbl"]]<-CONCAT(getg11nSafeVector(data[[secondCol]]),"\n",human_numbers(data[[countCol]]),"\n(",human_numbers((data[[countCol]]*100)/tTot),"%)")
   data[["firstCol_lbl"]]<-NA
   for(setName in unique(data[[firstCol]])){
     totalN<-group_totals[group_totals[firstCol]==setName,]$count
     total<-human_numbers(totalN)
-    data[data[firstCol]==setName,"firstCol_lbl"]<-CONCAT(setName,"\n",total,"\n(",human_numbers((totalN*100)/tTot),"%)")
+    data[data[firstCol]==setName,"firstCol_lbl"]<-CONCAT(getg11nSafeVector(setName),"\n",total,"\n(",human_numbers((totalN*100)/tTot),"%)")
   }
 
-  data[["firstCol_lbl"]]<-factor(data$firstCol_lbl,levels=unique(data$firstCol_lbl))
+  data[["firstCol_lbl"]]<-factor(getg11nSafe(data$firstCol_lbl),levels=unique(getg11nSafe(data$firstCol_lbl)))
   if(!is.na(secondCol)){
-    data[["secondCol_lbl"]]<-factor(data$secondCol_lbl,levels=unique(data$secondCol_lbl))
+    data[["secondCol_lbl"]]<-factor(getg11nSafe(data$secondCol_lbl),levels=unique(getg11nSafe(data$secondCol_lbl)))
   PieDonut(data, aes(firstCol_lbl, secondCol_lbl, count={{countCol}}),
-           title=chart_title,
+           title=getg11nSafe(chart_title),
            pieLabelSize = fontSize, donutLabelSize = fontSize,
            showRatioDonut = F, showRatioPie = F, showPieName = F,
            r0=0.50, r1=1.1, r2=1.7, labelposition=2, selected=c(1,2,3,4),
@@ -456,7 +456,7 @@ doublePie<-function(data,chart_title,firstCol,secondCol,countCol,threshold=0.001
            titlesize = 15, start = 3.5)
   } else
     PieDonut(data, aes(firstCol_lbl, count={{countCol}}),
-             title=chart_title,
+             title=getg11nSafe(chart_title),
              pieLabelSize = fontSize, donutLabelSize = fontSize,
              showRatioDonut = F, showRatioPie = F, showPieName = F,
              r0=0.8, r1=1.7, r2=1.8, labelposition=2, selected=c(1,2,3,4),
@@ -468,14 +468,14 @@ doublePie<-function(data,chart_title,firstCol,secondCol,countCol,threshold=0.001
 }
 
 #' @export
-populationPyramid<-function(data){
+populationPyramid<-function(data,gTitle){
 
   # Create a basic bar chart for one gender
   basic_plot <-  ggplot(
     data,
     aes(
       x = Starost,
-      fill = Pol,
+      fill = getg11nSafeVector(Pol),
       y = ifelse(
         test = Pol == "M",
         yes = -Populacija,
@@ -495,10 +495,10 @@ populationPyramid<-function(data){
     coord_flip() +
     theme_minimal() +
     labs(
-      x = "Starost",
-      y = "Populacija",
-      fill = "Pol",
-      title = "Populacija sa migrenom RS"
+      x = getg11nSafe("Starost"),
+      y = getg11nSafe("Populacija"),
+      fill = getg11nSafe("Pol"),
+      title = getg11nSafe(gTitle)
     )
   return(population_pyramid)
 }
@@ -510,10 +510,10 @@ populationPyramid<-function(data){
 waterFallGraph<-function(data,graphTitle,yTitle,xaxis,category,valueField,threshold=80000000,fontSize=3){
   df <-
     data.frame(
-      x.axis.Var = data[,xaxis][[1]],
-      cat.Var = data[,category][[1]],
-      values = data[,valueField][[1]])
-  tKey<-data[,category][[1]][1]
+      x.axis.Var = getg11nSafeVector(data[,xaxis][[1]]),
+      cat.Var = getg11nSafeVector(data[,category][[1]]),
+      values = getg11nSafeVector(data[,valueField][[1]]))
+  tKey<-getg11nSafeVector(data[,category][[1]][1])
   df.tmp <- df %>%
     # \_Set the factor levels in the order you want ----
   mutate(
@@ -535,7 +535,7 @@ waterFallGraph<-function(data,graphTitle,yTitle,xaxis,category,valueField,thresh
       summarise(values = sum(values)) %>%
       # \___Create new Group: 'Total' ----
     mutate(
-      x.axis.Var = "Ukupno",
+      x.axis.Var = getg11n("Ukupno"),
       cat.Var = factor(cat.Var,
                        levels = unique(cat.Var))
     ) %>%
@@ -635,6 +635,26 @@ waterFallGraph<-function(data,graphTitle,yTitle,xaxis,category,valueField,thresh
     legend.title =       element_blank()
   ) +
     scale_y_continuous(labels = human_numbers) +
-    labs(size = fontSize*4,x="xlabel", y=yTitle, title=graphTitle)
+    labs(size = fontSize*4,x="xlabel", y=getg11nSafe(yTitle), title=getg11nSafe(graphTitle))
 
+}
+
+makeSubColor<-function (main, no = 3)
+{
+  result = c()
+  for (i in 1:length(main)) {
+    temp = ztable::gradientColor(main[i], n = no + 2)[2:(no +
+                                                           1)]
+    result = c(result, temp)
+  }
+  result
+}
+
+transparent<-function (size = 0)
+{
+  temp = theme(rect = element_rect(fill = "transparent", size = size),
+               panel.background = element_rect(fill = "transparent"),
+               panel.border = element_rect(size = size), panel.grid.major = element_blank(),
+               panel.grid.minor = element_blank())
+  temp
 }

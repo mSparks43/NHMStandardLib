@@ -28,5 +28,8 @@ Depends:
   beepr,
   ggforce,
   grid,
-  tidyr
+  tidyr,
+  ztable,
+  scales,
+  stats
 RoxygenNote: 7.2.3

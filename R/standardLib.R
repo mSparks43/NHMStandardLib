@@ -9,7 +9,9 @@ pkg.env <- new.env()
 
 pkg.env$has_samples <- FALSE
 pkg.env$patient_samples<-data.frame()
+pkg.env <- new.env()
 pkg.env$g11n<-"sr"
+pkg.env$g11n_data<-data.frame()
 #' get standard folder names for current working directory
 #' @export
 folderInit <- function(){
@@ -283,10 +285,6 @@ rgbeta <- function(n=1000, mean=0.6, var=0.2, min = -0.6125, max = 1, a=NULL, b=
   }
 ##Graph helpers
 
-#' @export
-setg11n<-function(g11n){
-  pkg.env$g11n<-g11n
-}
 
 
 human_numbers <- function(x = NULL, smbl ="", signif = 1){

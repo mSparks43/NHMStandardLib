@@ -40,6 +40,7 @@ addg11n<-function(langJSON){
   pkg.env$g11n_data<-unique(cData)
   return()
 }
+
 #' @export
 getg11n<-function(textSearch){
   id<-getg11nID(textSearch)

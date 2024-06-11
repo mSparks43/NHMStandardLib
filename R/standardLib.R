@@ -397,7 +397,7 @@ human_rsd  <- function(x){human_numbers(x, smbl = "RSD ")}
 multilinePlot <- function(dataSrc,t_title,xlabel,ylabel,xdataName,ydataName,yUnits="",seqB=0,seqE=110,seqBy=10){
   dataSrc$Legend<-getg11nSafeVector(dataSrc$Legend)
   ggplot(data = dataSrc, aes(x={{xdataName}}, y = {{ydataName}},color=Legend, linetype = Legend)) +
-    geom_line(linewidth=2) +
+    geom_line() + geom_point()+
     scale_x_continuous(breaks = seq(seqB, seqE, by = seqBy)) +
     scale_color_manual(values=nhmDefaultColors()) +
     scale_y_continuous(labels = human_num) +

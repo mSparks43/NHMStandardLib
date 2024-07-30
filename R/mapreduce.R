@@ -1,12 +1,6 @@
 
-pkg.env <- new.env()
-if(Sys.info()["sysname"][1]=="Linux" || Sys.info()["sysname"][1]=="Darwin") {
-  pkg.env$numCores <- detectCores()
-}else {
-  pkg.env$numCores <- 1
-}
-pkg.env$maxCores <- pkg.env$numCores
-pkg.env$registered <- FALSE
+
+
 #' Map Reduce Map Function
 #'
 #' parse a map function over source data

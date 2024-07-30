@@ -12,6 +12,13 @@ pkg.env$patient_samples<-data.frame()
 pkg.env <- new.env()
 pkg.env$g11n<-"sr"
 pkg.env$g11n_data<-data.frame()
+if(Sys.info()["sysname"][1]=="Linux" || Sys.info()["sysname"][1]=="Darwin") {
+  pkg.env$numCores <- detectCores()
+}else {
+  pkg.env$numCores <- 1
+}
+pkg.env$maxCores <- pkg.env$numCores
+pkg.env$registered <- FALSE
 #' get standard folder names for current working directory
 #' @export
 folderInit <- function(){

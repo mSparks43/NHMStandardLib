@@ -76,10 +76,32 @@ mapReduce_map_ndjson<-function(srcDoc,mapFunction){
 #' @export
 mapReduce_reduce<-function(dt_s,key, functions, summary_vars){
   if(is.data.frame(dt_s)){
-    getRow<-function(x){
-      return(data.frame(x))
+
+      getRow<-function(x){
+        return(data.frame(x))
+      }
+      dt_s<-mapReduce_map(dt_s,getRow)
+  }
+
+  if(nrow(dt_s)>35000){
+    thisSize<-nrow(dt_s)
+    hasData<-T
+    resultDataall<-data.frame()
+    start<-1
+    end<-35000
+    while(hasData){
+      dataS<-dt_s[c(start:end)]
+      iresultDataall<-mapReduce_reduce(dataS,key,functions,summary_vars)
+      iresultDataall<-rbind(resultDataall,iresultDataall)
+      resultDataall<-mapReduce_reduce(iresultDataall,key,functions,summary_vars)
+      start<-start+35000
+      end<-min(end+35000,length(data))
+      if(start>=length(data))
+        hasData<-F
+      gc()
+      print(CONCAT("mapReduce_reduce key=(",key,") Process ",start," to ",end," of ",thisSize))
     }
-    dt_s<-mapReduce_map(dt_s,getRow)
+    return(resultDataall)
   }
   if(!pkg.env$registered){
       registerDoParallel(pkg.env$numCores)
@@ -127,6 +149,8 @@ mapReduce_reduce<-function(dt_s,key, functions, summary_vars){
       print("no reduce")
     }
     gc()
+    renames<-append(key,summary_vars)
+    names(retVal)<-renames
     return(retVal)
   }
 }

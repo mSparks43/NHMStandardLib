@@ -16,10 +16,13 @@ Depends:
   stringr,
   DBI,
   RSQLite,
+  parallel,
+  foreach,
+  doParallel,
+  vctrs,
   dplyr,
   ggplot2,
   jsonlite,
-  mapreduce,
   epiR,
   gridExtra,
   data.table,
@@ -32,4 +35,4 @@ Depends:
   ztable,
   scales,
   stats
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1

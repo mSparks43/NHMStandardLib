@@ -43,6 +43,7 @@ getNHMSampleIDs<-function(dbDir,versionDateName,base_itt_patient,sampleSize){
   if(nrow(thisSample)<sampleSize)
     stop("sampleSize > sample")
   thisSample<-thisSample[sample(nrow(thisSample), sampleSize), ]
+  gc()
   pkg.env$patient_samples<-rbind(pkg.env$patient_samples,thisSample)
   return(pkg.env$patient_samples)
 
@@ -59,6 +60,7 @@ importNHMDataBaseSampleData<-function(dbDir,versionDateName){
     document<-fromJSON(x)
     if(!itt_patient(document,versionDateName))
       return(data.frame())
+    gc()
     return (x)
   }
   raw_data<-importNHMDataBase(dbDir,versionDateName)

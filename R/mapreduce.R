@@ -128,15 +128,16 @@ mapReduce_reduce<-function(dt_s,key, functions, summary_vars){
     }
     if(!missing(key) && !missing(functions)&& !missing(summary_vars)){
       print("reduce")
-      key = rlang::syms(key)
+      nkey = rlang::syms(key)
       summary_exprs <- rlang::parse_exprs(glue::glue('{functions}({summary_vars}, na.rm = TRUE)'))
       names(summary_exprs) <- glue::glue('{functions}_{summary_vars}')
-      retVal <- retVal %>% group_by(!!!key) %>% summarise(!!!summary_exprs, .groups = 'drop')
+      retVal <- retVal %>% group_by(!!!nkey) %>% summarise(!!!summary_exprs, .groups = 'drop')
+      renames<-append(key,summary_vars)
+      names(retVal)<-renames
     }else{
       print("no reduce")
     }
-    renames<-append(key,summary_vars)
-    names(retVal)<-renames
+    gc()
     return(retVal)
   } else {
     retVal<- foreach(i=1:length(dt_s), .combine=rbind) %dopar% {
@@ -148,12 +149,15 @@ mapReduce_reduce<-function(dt_s,key, functions, summary_vars){
       summary_exprs <- rlang::parse_exprs(glue::glue('{functions}({summary_vars}, na.rm = TRUE)'))
       names(summary_exprs) <- glue::glue('{functions}_{summary_vars}')
       retVal <- retVal %>% group_by(!!!key) %>% summarise(!!!summary_exprs, .groups = 'drop')
+      renames<-append(key,summary_vars)
+      names(retVal)<-renames
+      gc()
     }else{
       print("no reduce")
+
     }
     gc()
-    renames<-append(key,summary_vars)
-    names(retVal)<-renames
+
     return(retVal)
   }
 }

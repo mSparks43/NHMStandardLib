@@ -16,12 +16,7 @@ getSampleITTPopulation<-function(dbDir,versionDateName,base_itt_patient){
   retVal<-mapReduce_reduce(dt_s)
   return (retVal)
 }
-itt_patient<-function(document,versionDateName){
-  inList<-pkg.env$patient_samples[pkg.env$patient_samples$pid==document$ID & pkg.env$patient_samples$versionDateName==versionDateName,]
-  if(length(inList>0))
-    return(TRUE)
-  return(FALSE)
-}
+
 #' Initialise sampling functions
 #'@export
 initNHMSampling<-function(useSampling=FALSE){
@@ -62,6 +57,12 @@ importNHMDataBaseSampleData<-function(dbDir,versionDateName){
       return(data.frame())
     gc()
     return (x)
+  }
+  itt_patient<-function(document,versionDateName){
+    inList<-pkg.env$patient_samples[pkg.env$patient_samples$pid==document$ID & pkg.env$patient_samples$versionDateName==versionDateName,]
+    if(length(inList>0))
+      return(TRUE)
+    return(FALSE)
   }
   raw_data<-importNHMDataBase(dbDir,versionDateName)
   #system.time(dt_s<-list( mclapply(raw_data, getdata,mc.cores = numCores))[[1]])

@@ -20,9 +20,9 @@
 #' @export
 mapReduce_map<-function(srcDoc,mapFunction){
   if (is.data.frame(srcDoc)){
-    if(nrow(srcDoc)<pkg.env$batchSize)
+    if(nrow(srcDoc)<pkg.env$batchSize){
       inData <- split(srcDoc, 1:nrow(srcDoc))
-    else{
+    }else{
       hasData<-T
       retVal<-list()
       start<-1
@@ -30,13 +30,15 @@ mapReduce_map<-function(srcDoc,mapFunction){
       thisSize<-nrow(srcDoc)
       while(hasData){
         print(CONCAT("mapReduce_map Process ",start," to ",end," of ",thisSize))
-        tretVal<-list(mclapply(split(srcDoc, start:end), mapFunction,mc.cores = pkg.env$numCores))[[1]]
+        inData <-split(srcDoc, start:end)
+        print(CONCAT("mapReduce_map split done"))
+        tretVal<-list(mclapply(inData, mapFunction,mc.cores = pkg.env$numCores))[[1]]
         retVal<-append(retVal,tretVal)
         start<-start+pkg.env$batchSize
         end<-min(end+pkg.env$batchSize,nrow(srcDoc))
         if(start>=nrow(srcDoc))
           hasData<-F
-        print(CONCAT("mapReduce_map has ",length(retVal)," elements",))
+        print(CONCAT("mapReduce_map has ",length(retVal)," elements"))
         gc()
       }
       return(retVal)

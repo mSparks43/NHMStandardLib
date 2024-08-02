@@ -55,7 +55,6 @@ importNHMDataBaseSampleData<-function(dbDir,versionDateName){
     document<-fromJSON(x)
     if(!itt_patient(document,versionDateName))
       return(data.frame())
-    gc()
     return (x)
   }
   itt_patient<-function(document,versionDateName){

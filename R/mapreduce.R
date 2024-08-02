@@ -110,7 +110,7 @@ mapReduce_reduce<-function(dt_s,key, functions, summary_vars){
     start<-1
     end<-pkg.env$batchSize
     while(hasData){
-      keyS<-CONCAT(key)
+      keyS<-paste(key,collapse=" ")
       print(CONCAT("mapReduce_reduce key=(",keyS,") Process ",start," to ",end," of ",thisSize))
       dataS<-dt_s[c(start:end)]
       iresultDataall<-mapReduce_reduce(dataS,key,functions,summary_vars)
@@ -120,7 +120,7 @@ mapReduce_reduce<-function(dt_s,key, functions, summary_vars){
       end<-min(end+pkg.env$batchSize,length(dt_s))
       if(start>=length(dt_s))
         hasData<-F
-      print(CONCAT("mapReduce_reduce key=(",keyS,") has ",nrow(resultDataall)," rows",))
+      print(CONCAT("mapReduce_reduce key=(",keyS,") has ",nrow(resultDataall)," rows"))
       gc()
     }
     return(resultDataall)

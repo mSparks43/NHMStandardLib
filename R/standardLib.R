@@ -8,6 +8,7 @@ pkg.env <- new.env()
 ## base Functions
 
 pkg.env$has_samples <- FALSE
+pkg.env$batchSize <- 35000
 pkg.env$patient_samples<-data.frame()
 pkg.env <- new.env()
 pkg.env$g11n<-"sr"

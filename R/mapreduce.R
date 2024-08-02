@@ -84,23 +84,24 @@ mapReduce_reduce<-function(dt_s,key, functions, summary_vars){
       dt_s<-mapReduce_map(dt_s,getRow)
   }
 
-  if(length(dt_s)>35000 && !missing(key) && !missing(functions)&& !missing(summary_vars)){
+  if(length(dt_s)>pkg.env$batchSize && !missing(key) && !missing(functions)&& !missing(summary_vars)){
     thisSize<-length(dt_s)
     hasData<-T
     resultDataall<-data.frame()
     start<-1
-    end<-35000
+    end<-pkg.env$batchSize
     while(hasData){
+      keyS<-CONCAT(key)
+      print(CONCAT("mapReduce_reduce key=(",keyS,") Process ",start," to ",end," of ",thisSize))
       dataS<-dt_s[c(start:end)]
       iresultDataall<-mapReduce_reduce(dataS,key,functions,summary_vars)
       iresultDataall<-rbind(resultDataall,iresultDataall)
       resultDataall<-mapReduce_reduce(iresultDataall,key,functions,summary_vars)
-      start<-start+35000
-      end<-min(end+35000,length(dt_s))
+      start<-start+pkg.env$batchSize
+      end<-min(end+pkg.env$batchSize,length(dt_s))
       if(start>=length(dt_s))
         hasData<-F
-      else
-        print(CONCAT("mapReduce_reduce key=(",CONCAT(key),") Process ",start," to ",end," of ",thisSize))
+      print(CONCAT("mapReduce_reduce key=(",keyS,") has ",nrow(resultDataall)," rows",))
       gc()
     }
     return(resultDataall)
@@ -168,10 +169,20 @@ mapReduce_reduce<-function(dt_s,key, functions, summary_vars){
 #' modify this value.
 #' @param numWorkers the number of workers
 #' @return void
-#' @param numWorkers the number of workers
-#' @return void
 #'
 #' @export
 mapReduce_numWorkers <- function(numWorkers){
   pkg.env$numCores <- min(c(numWorkers,pkg.env$maxCores))
 }
+
+#' Map Reduce set batch size
+#'
+#' By default, 35,000 is used update this relative to available memory
+#' @param batchSize the number of elements to run in a batch
+#' @return void
+#'
+#' @export
+mapReduce_setBatchSize <- function(batchSize){
+  pkg.env$batchSize<-batchSize
+}
+

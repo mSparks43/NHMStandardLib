@@ -11,8 +11,6 @@ mapReduce_numWorkers(numWorkers)
 }
 \value{
 void
-
-void
 }
 \description{
 By default, detectCores is used to set the number of workers, use this function to

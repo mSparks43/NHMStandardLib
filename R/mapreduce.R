@@ -99,8 +99,9 @@ mapReduce_reduce<-function(dt_s,key, functions, summary_vars){
       end<-min(end+35000,length(dt_s))
       if(start>=length(dt_s))
         hasData<-F
+      else
+        print(CONCAT("mapReduce_reduce key=(",CONCAT(key),") Process ",start," to ",end," of ",thisSize))
       gc()
-      print(CONCAT("mapReduce_reduce key=(",key,") Process ",start," to ",end," of ",thisSize))
     }
     return(resultDataall)
   }

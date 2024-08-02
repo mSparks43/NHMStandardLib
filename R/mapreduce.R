@@ -85,7 +85,7 @@ mapReduce_reduce<-function(dt_s,key, functions, summary_vars){
   }
 
   if(length(dt_s)>35000 && !missing(key) && !missing(functions)&& !missing(summary_vars)){
-    thisSize<-nrow(dt_s)
+    thisSize<-length(dt_s)
     hasData<-T
     resultDataall<-data.frame()
     start<-1
@@ -96,8 +96,8 @@ mapReduce_reduce<-function(dt_s,key, functions, summary_vars){
       iresultDataall<-rbind(resultDataall,iresultDataall)
       resultDataall<-mapReduce_reduce(iresultDataall,key,functions,summary_vars)
       start<-start+35000
-      end<-min(end+35000,length(data))
-      if(start>=length(data))
+      end<-min(end+35000,length(dt_s))
+      if(start>=length(dt_s))
         hasData<-F
       gc()
       print(CONCAT("mapReduce_reduce key=(",key,") Process ",start," to ",end," of ",thisSize))

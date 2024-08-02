@@ -135,6 +135,8 @@ mapReduce_reduce<-function(dt_s,key, functions, summary_vars){
     }else{
       print("no reduce")
     }
+    renames<-append(key,summary_vars)
+    names(retVal)<-renames
     return(retVal)
   } else {
     retVal<- foreach(i=1:length(dt_s), .combine=rbind) %dopar% {

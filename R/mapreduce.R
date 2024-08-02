@@ -30,7 +30,7 @@ mapReduce_map<-function(srcDoc,mapFunction){
       for(i in 1:length(inDataL)){
 
 
-        print(CONCAT("mapReduce_map Process ",start," to ",end," of ",thisSize))
+        print(CONCAT("mapReduce_map Process ",nrow(inDataL[[i]])))
         inData <-split(inDataL[[i]], 1:nrow(inDataL[[i]]))
         print(CONCAT("mapReduce_map split done"))
         tretVal<-list(mclapply(inData, mapFunction,mc.cores = pkg.env$numCores))[[1]]

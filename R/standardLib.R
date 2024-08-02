@@ -10,7 +10,6 @@ pkg.env <- new.env()
 pkg.env$has_samples <- FALSE
 pkg.env$batchSize <- 35000
 pkg.env$patient_samples<-data.frame()
-pkg.env <- new.env()
 pkg.env$g11n<-"sr"
 pkg.env$g11n_data<-data.frame()
 if(Sys.info()["sysname"][1]=="Linux" || Sys.info()["sysname"][1]=="Darwin") {

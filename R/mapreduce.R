@@ -23,21 +23,18 @@ mapReduce_map<-function(srcDoc,mapFunction){
     if(nrow(srcDoc)<pkg.env$batchSize){
       inData <- split(srcDoc, 1:nrow(srcDoc))
     }else{
+      inDataL <- split(fces, 1:(nrow(fces)/pkg.env$batchSize))
       hasData<-T
       retVal<-list()
-      start<-1
-      end<-pkg.env$batchSize
       thisSize<-nrow(srcDoc)
-      while(hasData){
+      for(i in 1:length(inDataL)){
+
+
         print(CONCAT("mapReduce_map Process ",start," to ",end," of ",thisSize))
-        inData <-split(srcDoc, start:end)
+        inData <-split(inDataL[[i]], 1:nrow(inDataL[[i]]))
         print(CONCAT("mapReduce_map split done"))
         tretVal<-list(mclapply(inData, mapFunction,mc.cores = pkg.env$numCores))[[1]]
         retVal<-append(retVal,tretVal)
-        start<-start+pkg.env$batchSize
-        end<-min(end+pkg.env$batchSize,nrow(srcDoc))
-        if(start>=nrow(srcDoc))
-          hasData<-F
         print(CONCAT("mapReduce_map has ",length(retVal)," elements"))
         gc()
       }

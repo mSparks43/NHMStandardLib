@@ -84,7 +84,7 @@ mapReduce_reduce<-function(dt_s,key, functions, summary_vars){
       dt_s<-mapReduce_map(dt_s,getRow)
   }
 
-  if(nrow(dt_s)>35000){
+  if(length(dt_s)>35000){
     thisSize<-nrow(dt_s)
     hasData<-T
     resultDataall<-data.frame()

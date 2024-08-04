@@ -23,7 +23,7 @@ mapReduce_map<-function(srcDoc,mapFunction){
     if(nrow(srcDoc)<pkg.env$batchSize){
       inData <- split(srcDoc, 1:nrow(srcDoc))
     }else{
-      inDataL <- split(fces, 1:(nrow(fces)/pkg.env$batchSize))
+      inDataL <- split(srcDoc, 1:(nrow(srcDoc)/pkg.env$batchSize))
       hasData<-T
       retVal<-list()
       thisSize<-nrow(srcDoc)

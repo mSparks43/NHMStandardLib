@@ -23,19 +23,19 @@ mapReduce_map<-function(srcDoc,mapFunction){
     if(nrow(srcDoc)<pkg.env$batchSize){
       inData <- split(srcDoc, 1:nrow(srcDoc))
     }else{
-      inDataL <- split(srcDoc, 1:(nrow(srcDoc)/pkg.env$batchSize))
+      inDataL <- suppressWarnings({split(srcDoc, 1:(nrow(srcDoc)/pkg.env$batchSize))})
       hasData<-T
       retVal<-list()
       thisSize<-nrow(srcDoc)
       for(i in 1:length(inDataL)){
 
 
-        print(CONCAT("mapReduce_map Process ",nrow(inDataL[[i]])))
+        message(CONCAT("mapReduce_map Process ",nrow(inDataL[[i]])))
         inData <-split(inDataL[[i]], 1:nrow(inDataL[[i]]))
-        print(CONCAT("mapReduce_map split done"))
+        message(CONCAT("mapReduce_map split done"))
         tretVal<-list(mclapply(inData, mapFunction,mc.cores = pkg.env$numCores))[[1]]
         retVal<-append(retVal,tretVal)
-        print(CONCAT("mapReduce_map has ",length(retVal)," elements"))
+        message(CONCAT("mapReduce_map has ",length(retVal)," elements"))
         gc()
       }
       return(retVal)
@@ -111,7 +111,7 @@ mapReduce_reduce<-function(dt_s,key, functions, summary_vars){
     end<-pkg.env$batchSize
     while(hasData){
       keyS<-paste(key,collapse=" ")
-      print(CONCAT("mapReduce_reduce key=(",keyS,") Process ",start," to ",end," of ",thisSize))
+      message(CONCAT("mapReduce_reduce key=(",keyS,") Process ",start," to ",end," of ",thisSize))
       dataS<-dt_s[c(start:end)]
       iresultDataall<-mapReduce_reduce(dataS,key,functions,summary_vars)
       iresultDataall<-rbind(resultDataall,iresultDataall)
@@ -120,7 +120,7 @@ mapReduce_reduce<-function(dt_s,key, functions, summary_vars){
       end<-min(end+pkg.env$batchSize,length(dt_s))
       if(start>=length(dt_s))
         hasData<-F
-      print(CONCAT("mapReduce_reduce key=(",keyS,") has ",nrow(resultDataall)," rows"))
+      message(CONCAT("mapReduce_reduce key=(",keyS,") has ",nrow(resultDataall)," rows"))
       gc()
     }
     return(resultDataall)
@@ -148,7 +148,7 @@ mapReduce_reduce<-function(dt_s,key, functions, summary_vars){
       dt_s2[[i]]
     }
     if(!missing(key) && !missing(functions)&& !missing(summary_vars)){
-      print("reduce")
+      message("reduce")
       nkey = rlang::syms(key)
       summary_exprs <- rlang::parse_exprs(glue::glue('{functions}({summary_vars}, na.rm = TRUE)'))
       names(summary_exprs) <- glue::glue('{functions}_{summary_vars}')
@@ -156,7 +156,7 @@ mapReduce_reduce<-function(dt_s,key, functions, summary_vars){
       renames<-append(key,summary_vars)
       names(retVal)<-renames
     }else{
-      print("no reduce")
+      message("no reduce")
     }
     gc()
     return(retVal)
@@ -165,7 +165,7 @@ mapReduce_reduce<-function(dt_s,key, functions, summary_vars){
       dt_s[[i]]
     }
     if(!missing(key) && !missing(functions)&& !missing(summary_vars)){
-      print("reduce")
+      message("reduce")
       key = rlang::syms(key)
       summary_exprs <- rlang::parse_exprs(glue::glue('{functions}({summary_vars}, na.rm = TRUE)'))
       names(summary_exprs) <- glue::glue('{functions}_{summary_vars}')
@@ -174,7 +174,7 @@ mapReduce_reduce<-function(dt_s,key, functions, summary_vars){
       names(retVal)<-renames
       gc()
     }else{
-      print("no reduce")
+      message("no reduce")
 
     }
     gc()

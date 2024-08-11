@@ -2,7 +2,7 @@
 % Please edit documentation in R/standardLib.R
 \name{multilinePlot}
 \alias{multilinePlot}
-\title{Create a plot with multiple lines}
+\title{Create a plot with multiple lines and shapes}
 \usage{
 multilinePlot(
   dataSrc,
@@ -18,7 +18,7 @@ multilinePlot(
 )
 }
 \description{
-Create a plot with multiple lines
+Create a plot with multiple lines and shapes
 }
 \examples{
 d<-data.frame()

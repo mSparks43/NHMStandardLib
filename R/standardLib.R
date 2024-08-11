@@ -393,7 +393,7 @@ human_num   <- function(x){human_numbers(x, smbl = "")}
 #' @export
 human_rsd  <- function(x){human_numbers(x, smbl = "RSD ")}
 
-#' Create a plot with multiple lines
+#' Create a plot with multiple lines and shapes
 #' @examples
 #' d<-data.frame()
 #' d<-rbind(d,data.frame(age=c(18:100),Legend="male",weight=rnorm(83,100,10)))
@@ -403,7 +403,7 @@ human_rsd  <- function(x){human_numbers(x, smbl = "RSD ")}
 #' @export
 multilinePlot <- function(dataSrc,t_title,xlabel,ylabel,xdataName,ydataName,yUnits="",seqB=0,seqE=110,seqBy=10){
   dataSrc$Legend<-getg11nSafeVector(dataSrc$Legend)
-  ggplot(data = dataSrc, aes(x={{xdataName}}, y = {{ydataName}},color=Legend, linetype = Legend)) +
+  ggplot(data = dataSrc, aes(x={{xdataName}}, y = {{ydataName}},color=Legend,shape=Legend, linetype = Legend)) +
     geom_line() + geom_point()+
     scale_x_continuous(breaks = seq(seqB, seqE, by = seqBy)) +
     scale_color_manual(values=nhmDefaultColors()) +

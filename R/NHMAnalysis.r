@@ -426,7 +426,10 @@ nhmDefaultColors <- function(){
   retVal<-c("#6D9DC5","#80DED9","#068D9D","#acf47d","#53599A","#0f6d96","#1c92f4","#09c61a","#30bf9d")
   return(retVal)
 }
-
+nhmDefaultShapes <- function(){
+  retVal<-c(0,1,2,3,5,8,13,21,22)
+  return(retVal)
+}
 #' @export
 doublePie<-function(data,chart_title,firstCol,secondCol,countCol,threshold=0.001,fontSize=3,positionThreshold = 0.01){
   group_totals <- mapReduce_reduce(data,c(firstCol),c("sum"),c(countCol))

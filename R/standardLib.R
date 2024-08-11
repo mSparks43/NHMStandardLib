@@ -407,6 +407,7 @@ multilinePlot <- function(dataSrc,t_title,xlabel,ylabel,xdataName,ydataName,yUni
     geom_line() + geom_point()+
     scale_x_continuous(breaks = seq(seqB, seqE, by = seqBy)) +
     scale_color_manual(values=nhmDefaultColors()) +
+    scale_shape_manual(values = nhmDefaultShapes()) +
     scale_y_continuous(labels = human_num) +
     labs(x=getg11nSafe(xlabel), y=getg11nSafe(ylabel), title=getg11nSafe(t_title)) +
     theme(text = element_text(size = 20))

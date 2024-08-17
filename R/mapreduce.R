@@ -153,8 +153,10 @@ mapReduce_reduce<-function(dt_s,key, functions, summary_vars){
       summary_exprs <- rlang::parse_exprs(glue::glue('{functions}({summary_vars}, na.rm = TRUE)'))
       names(summary_exprs) <- glue::glue('{functions}_{summary_vars}')
       retVal <- retVal %>% group_by(!!!nkey) %>% summarise(!!!summary_exprs, .groups = 'drop')
-      renames<-append(key,summary_vars)
-      names(retVal)<-renames
+      if(length(summary_vars)==length(unique(summary_vars))){
+        renames<-append(key,summary_vars)
+        names(retVal)<-renames
+      }
     }else{
       message("no reduce")
     }
@@ -170,8 +172,10 @@ mapReduce_reduce<-function(dt_s,key, functions, summary_vars){
       summary_exprs <- rlang::parse_exprs(glue::glue('{functions}({summary_vars}, na.rm = TRUE)'))
       names(summary_exprs) <- glue::glue('{functions}_{summary_vars}')
       retVal <- retVal %>% group_by(!!!key) %>% summarise(!!!summary_exprs, .groups = 'drop')
-      renames<-append(key,summary_vars)
-      names(retVal)<-renames
+      if(length(summary_vars)==length(unique(summary_vars))){
+        renames<-append(key,summary_vars)
+        names(retVal)<-renames
+      }
       gc()
     }else{
       message("no reduce")

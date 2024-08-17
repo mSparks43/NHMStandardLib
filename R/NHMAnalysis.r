@@ -6,11 +6,23 @@ getParameters_mapFunction <- function(x) {
   sex <- document$Sex
   age<-c(0:document$age+1)
   retVal<-data.frame(age,sex,pid=document$ID)
+  lastParameters<-list()
   for(i in parameters){
     #i is HEIGHT/WEIGHT
+
     thisData<-parameter_values[parameter_values$test==i,c(2,3)]
     names(thisData)<-c("age",i)
     retVal <- merge(x = retVal, y = thisData , by="age",all.x = TRUE)
+  }
+  #fill in NAs - parameters that didn't change
+  for(tA in age){
+    for(i in parameters){
+      if(is.null(lastParameters[i])||!is.na(retVal[age==tA,i]))
+        lastParameters[i]<-retVal[age==tA,i]
+      if(is.na(retVal[age==tA,i]))
+        retVal[age==tA,i]<-lastParameters[i]
+    }
+
   }
   #retVal[is.na(retVal)] <- 0
   return (retVal)

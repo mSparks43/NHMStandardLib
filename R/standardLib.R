@@ -19,6 +19,8 @@ if(Sys.info()["sysname"][1]=="Linux" || Sys.info()["sysname"][1]=="Darwin") {
 }
 pkg.env$maxCores <- pkg.env$numCores
 pkg.env$registered <- FALSE
+pkg.env$anaysisgrp<-"Parameters"
+pkg.env$anaysisParameters<-c("WEIGHT","HEIGHT")
 #' get standard folder names for current working directory
 #' @export
 folderInit <- function(){

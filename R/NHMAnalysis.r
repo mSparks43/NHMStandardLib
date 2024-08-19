@@ -33,48 +33,56 @@ setanaysisParameters <- function(group,items){
 #' @export
 getParameters_mapFunction <- function(x) {
   document<-fromJSON(x)
-  parameter_values<-document[[pkg.env$anaysisgrp]]
-  parameters<-pkg.env$anaysisParameters #c("WEIGHT","HEIGHT")
-  #parameters<-c("DIABETES")
   sex <- document$Sex
   age<-c(0:document$age+1)
   retVal<-data.frame(age,sex,pid=document$ID)
 
-  for(i in parameters){
-    #i is HEIGHT/WEIGHT
+  for(typeN in 1:length(pkg.env$anaysisgrp)){
+    parameter_values<-document[[pkg.env$anaysisgrp[[typeN]]]]
+    parameters<-pkg.env$anaysisParameters[[typeN]] #c("WEIGHT","HEIGHT")
+    #parameters<-c("DIABETES")
 
-    thisData<-parameter_values[parameter_values$test==i,c(2,3)]
-    thisData<-transform(thisData,value=as.numeric(value))
-    thisData <- thisData %>% arrange(age)
-    aData<-thisData
-    lastAge<-thisData[1,]$age
-    lastVal<-NA
-    if(nrow(thisData)>0){
-      if(!is.na(thisData[1,]$value))
-        lastVal<-thisData[1,]$value
-      for(n in 2:nrow(thisData)){
+    if(pkg.env$anaysisgrp[[typeN]]=="EQ5D"){
+      retVal <- merge(x = retVal, y = data.frame(age,EQ5D=parameter_values) , by="age",all.x = TRUE)
+    } else {
+      for(i in parameters){
+        #i is HEIGHT/WEIGHT
 
-        if(!is.na(thisData[n,]$age)&&!is.na(lastAge)&&thisData[n,]$age>lastAge+1){
-          #print(CONCAT("fill ",lastAge," to ",thisData[n,]$age))
 
-          aData<-rbind(aData,data.frame(age=c((lastAge+1):(thisData[n,]$age-1)),value=lastVal))
+        thisData<-parameter_values[parameter_values$test==i,c(2,3)]
+        thisData<-transform(thisData,value=as.numeric(value))
+        thisData <- thisData %>% arrange(age)
+        aData<-thisData
+        lastAge<-thisData[1,]$age
+        lastVal<-NA
+        if(nrow(thisData)>0){
+          if(!is.na(thisData[1,]$value))
+            lastVal<-thisData[1,]$value
+          for(n in 2:nrow(thisData)){
+
+            if(!is.na(thisData[n,]$age)&&!is.na(lastAge)&&thisData[n,]$age>lastAge+1){
+              #print(CONCAT("fill ",lastAge," to ",thisData[n,]$age))
+
+              aData<-rbind(aData,data.frame(age=c((lastAge+1):(thisData[n,]$age-1)),value=lastVal))
+
+            }
+            lastAge<-thisData[n,]$age
+            if(!is.na(thisData[n,]$value))
+              lastVal<-thisData[n,]$value
+          }
+        }
+        else{
+          aData<-rbind(aData,data.frame(age=c(0:document$age+1),value=lastVal))
+          lastAge<-document$age+1
+        }
+        if(lastAge<document$age+1){
+          aData<-rbind(aData,data.frame(age=c((lastAge):document$age+1),value=lastVal))
 
         }
-        lastAge<-thisData[n,]$age
-        if(!is.na(thisData[n,]$value))
-          lastVal<-thisData[n,]$value
+        names(aData)<-c("age",i)
+        retVal <- merge(x = retVal, y = aData , by="age",all.x = TRUE)
       }
     }
-    else{
-      aData<-rbind(aData,data.frame(age=c(0:document$age+1),value=lastVal))
-      lastAge<-document$age+1
-    }
-    if(lastAge<document$age+1){
-      aData<-rbind(aData,data.frame(age=c((lastAge):document$age+1),value=lastVal))
-
-    }
-    names(aData)<-c("age",i)
-    retVal <- merge(x = retVal, y = aData , by="age",all.x = TRUE)
   }
   retVal<-retVal[complete.cases(retVal),]
   #retVal[is.na(retVal)] <- 0

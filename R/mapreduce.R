@@ -48,16 +48,52 @@ mapReduce_map<-function(srcDoc,mapFunction){
   if(pkg.env$numCores>1){
     cl <- makeForkCluster(pkg.env$numCores)
     #retVal<-list(mclapply(inData, mapFunction,mc.cores = pkg.env$numCores))[[1]]
-    retVal<-list(parLapply(cl,inData,fun=mapFunction))[[1]]
+    thisSize<-length(inData)
+    hasData<-T
+    resultDataall<-data.frame()
+    start<-1
+    end<-min(pkg.env$batchSize,length(inData))
+    length(inData)
+    retVal<-list()
+    fileList<-list()
+    while(hasData){
+      file<-tempfile()
+      dataS<-inData[c(start:end)]
+      saveRDS(dataS,file)
+      message(CONCAT("mapReduce_map create tmpdata ",start," to ",end," of ",thisSize," ",file))
+      fileList<-append(fileList,file)
+      start<-start+pkg.env$batchSize
+      end<-min(end+pkg.env$batchSize,length(inData))
+      if(start>=length(inData))
+        hasData<-F
+    }
+    for(i in fileList){
+      message(CONCAT("mapReduce_map Process ",i," ",thisSize))
+      dataS<-readRDS(i)#inData[c(start:end)]
+      unlink(i)
+      iLV<-parLapply(cl,dataS,fun=mapFunction)
+      message(CONCAT("mapReduce_map compressList"))
+      iretVal<-list(iLV)[[1]]
+      #iretVal<-list()
+      gc()
+      message(CONCAT("mapReduce_map cleaning ",length(iretVal)))
+      iretVal<-list_drop_empty(iretVal)
+      message(CONCAT("mapReduce_map cleaned ",length(iretVal)))
+      gc()
+      retVal<-append(retVal,iretVal)
+      message(CONCAT("mapReduce_map now ",length(retVal)))
+
+    }
     stopCluster(cl)
   } else {
     retVal<-list(mclapply(inData, mapFunction,mc.cores = pkg.env$numCores))[[1]]
+    gc()
+    message(CONCAT("mapReduce_map cleaning ",length(retVal)))
+    retVal<-list_drop_empty(retVal)
+    message(CONCAT("mapReduce_map cleaned ",length(retVal)))
+    gc()
   }
-  gc()
-  message(CONCAT("mapReduce_map cleaning ",length(retVal)))
-  retVal<-list_drop_empty(retVal)
-  message(CONCAT("mapReduce_map cleaned ",length(retVal)))
-  gc()
+
   return (retVal)
 }
 #' Map Reduce Map Function for ndjson files

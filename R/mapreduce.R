@@ -71,7 +71,9 @@ mapReduce_map<-function(srcDoc,mapFunction){
       message(CONCAT("mapReduce_map Process ",i," ",thisSize))
       dataS<-readRDS(i)#inData[c(start:end)]
       unlink(i)
-      iLV<-parLapply(cl,dataS,fun=mapFunction)
+
+      #iLV<-parLapply(cl,dataS,fun=mapFunction)
+      iLV<-mclapply(inData, mapFunction,mc.cores = pkg.env$numCores)
       message(CONCAT("mapReduce_map compressList"))
       iretVal<-list(iLV)[[1]]
       #iretVal<-list()

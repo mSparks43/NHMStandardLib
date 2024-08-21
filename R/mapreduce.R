@@ -43,9 +43,20 @@ mapReduce_map<-function(srcDoc,mapFunction){
   } else {
     inData <- srcDoc
   }
-  retVal<-list(mclapply(inData, mapFunction,mc.cores = pkg.env$numCores))[[1]]
+
+  message(CONCAT("mapReduce_map Mapping ",length(inData)))
+  if(pkg.env$numCores>1){
+    cl <- makeForkCluster(pkg.env$numCores)
+    #retVal<-list(mclapply(inData, mapFunction,mc.cores = pkg.env$numCores))[[1]]
+    retVal<-list(parLapply(cl,inData,fun=mapFunction))[[1]]
+    stopCluster(cl)
+  } else {
+    retVal<-list(mclapply(inData, mapFunction,mc.cores = pkg.env$numCores))[[1]]
+  }
   gc()
+  message(CONCAT("mapReduce_map cleaning ",length(retVal)))
   retVal<-list_drop_empty(retVal)
+  message(CONCAT("mapReduce_map cleaned ",length(retVal)))
   gc()
   return (retVal)
 }

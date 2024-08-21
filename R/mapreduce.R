@@ -73,7 +73,7 @@ mapReduce_map<-function(srcDoc,mapFunction){
       unlink(i)
 
       #iLV<-parLapply(cl,dataS,fun=mapFunction)
-      iLV<-mclapply(inData, mapFunction,mc.cores = pkg.env$numCores)
+      iLV<-mclapply(dataS, mapFunction,mc.cores = pkg.env$numCores)
       message(CONCAT("mapReduce_map compressList"))
       iretVal<-list(iLV)[[1]]
       #iretVal<-list()

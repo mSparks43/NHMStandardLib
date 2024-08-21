@@ -47,6 +47,7 @@ mapReduce_map<-function(srcDoc,mapFunction){
   message(CONCAT("mapReduce_map Mapping ",length(inData)))
   if(pkg.env$numCores>1){
     cl <- makeForkCluster(pkg.env$numCores)
+    setDefaultCluster(cl)
     #retVal<-list(mclapply(inData, mapFunction,mc.cores = pkg.env$numCores))[[1]]
     thisSize<-length(inData)
     hasData<-T
@@ -67,11 +68,12 @@ mapReduce_map<-function(srcDoc,mapFunction){
       if(start>=length(inData))
         hasData<-F
     }
+    gc()
     for(i in fileList){
-      message(CONCAT("mapReduce_map Process ",i," ",thisSize))
+
       dataS<-readRDS(i)#inData[c(start:end)]
       unlink(i)
-
+      message(CONCAT("mapReduce_map Process ",i," ",length(dataS)))
       #iLV<-parLapply(cl,dataS,fun=mapFunction)
       iLV<-mclapply(dataS, mapFunction,mc.cores = pkg.env$numCores)
       message(CONCAT("mapReduce_map compressList"))

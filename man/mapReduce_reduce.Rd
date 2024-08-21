@@ -4,7 +4,7 @@
 \alias{mapReduce_reduce}
 \title{Map Reduce Reduce function}
 \usage{
-mapReduce_reduce(dt_s, key, functions, summary_vars)
+mapReduce_reduce(dt_s, key, functions, summary_vars, doBatch = T)
 }
 \arguments{
 \item{dt_s}{the list to reduce, result of mapReduce_map}

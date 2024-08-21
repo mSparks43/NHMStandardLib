@@ -94,7 +94,7 @@ mapReduce_map_ndjson<-function(srcDoc,mapFunction){
 #' molecules <- mapReduce_reduce(list_data,c("molecule"),c("sum"),c("count"))
 #'
 #' @export
-mapReduce_reduce<-function(dt_s,key, functions, summary_vars){
+mapReduce_reduce<-function(dt_s,key, functions, summary_vars,doBatch=T){
   if(is.data.frame(dt_s)){
 
       getRow<-function(x){
@@ -103,7 +103,7 @@ mapReduce_reduce<-function(dt_s,key, functions, summary_vars){
       dt_s<-mapReduce_map(dt_s,getRow)
   }
 
-  if(length(dt_s)>pkg.env$batchSize && !missing(key) && !missing(functions)&& !missing(summary_vars)){
+  if(doBatch&&length(dt_s)>pkg.env$batchSize && !missing(key) && !missing(functions)&& !missing(summary_vars)){
     thisSize<-length(dt_s)
     hasData<-T
     resultDataall<-data.frame()
@@ -113,9 +113,9 @@ mapReduce_reduce<-function(dt_s,key, functions, summary_vars){
       keyS<-paste(key,collapse=" ")
       message(CONCAT("mapReduce_reduce key=(",keyS,") Process ",start," to ",end," of ",thisSize))
       dataS<-dt_s[c(start:end)]
-      iresultDataall<-mapReduce_reduce(dataS,key,functions,summary_vars)
+      iresultDataall<-mapReduce_reduce(dataS,key,functions,summary_vars,F)
       iresultDataall<-rbind(resultDataall,iresultDataall)
-      resultDataall<-mapReduce_reduce(iresultDataall,key,functions,summary_vars)
+      resultDataall<-mapReduce_reduce(iresultDataall,key,functions,summary_vars,F)
       start<-start+pkg.env$batchSize
       end<-min(end+pkg.env$batchSize,length(dt_s))
       if(start>=length(dt_s))

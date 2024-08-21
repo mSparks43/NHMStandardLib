@@ -27,7 +27,11 @@ appendAgeGroup <- function(x){
 #' @export
 setanaysisParameters <- function(group,items){
   pkg.env$anaysisgrp<-group
-  pkg.env$anaysisParameters<-items
+  if(!is.list(items)){
+    pkg.env$anaysisParameters<-list(items)
+  } else {
+    pkg.env$anaysisParameters<-items
+  }
 }
 
 #' @export
@@ -38,6 +42,7 @@ getParameters_mapFunction <- function(x) {
   retVal<-data.frame(age,sex,pid=document$ID)
 
   for(typeN in 1:length(pkg.env$anaysisgrp)){
+
     parameter_values<-document[[pkg.env$anaysisgrp[[typeN]]]]
     parameters<-pkg.env$anaysisParameters[[typeN]] #c("WEIGHT","HEIGHT")
     #parameters<-c("DIABETES")

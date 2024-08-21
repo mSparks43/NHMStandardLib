@@ -38,7 +38,7 @@ setanaysisParameters <- function(group,items){
 getParameters_mapFunction <- function(x) {
   document<-fromJSON(x)
   sex <- document$Sex
-  age<-c(0:document$age+1)
+  age<-c(0:(document$age))
   retVal<-data.frame(age,sex,pid=document$ID)
 
   for(typeN in 1:length(pkg.env$anaysisgrp)){

@@ -257,6 +257,24 @@ ci95_to_sd<-function(n,l95,u95){
 }
 
 #' @export
+inCodeRange<-function(code,range){
+  stringRange<-FALSE
+  if(grepl( '-',range, fixed = TRUE)){
+    stringRange<-TRUE
+    sepPos=unlist(gregexpr('-', range))[1]
+    lcode=substr(range,1,sepPos-1)
+    ucode=substr(range,sepPos+1,nchar(range))
+  } else{
+    lcode<-range
+    ucode<-range
+  }
+  if((!stringRange && substr(code,1,nchar(range))==range) ||
+     (stringRange && code>=lcode && code<=ucode))
+    return (T)
+  return (F)
+}
+
+#' @export
 rgbeta <- function(n=1000, mean=0.6, var=0.2, min = -0.6125, max = 1, a=NULL, b=NULL)
   {
     dmin <- mean - min

@@ -52,9 +52,9 @@ getYoungFemaleBMIGroup<-function(x){
   return("Obese")
 }
 getBMIGroup<-function(x){
-  if(x$age<20&sex=="Male")
+  if(x$age<20&x$sex=="Male")
     return(getYoungMaleBMIGroup(x))
-  if(x$age<20&sex=="Female")
+  if(x$age<20&x$sex=="Female")
     return(getYoungFemaleBMIGroup(x))
   if(x$BMI<=18.5)
     return("Underweight")

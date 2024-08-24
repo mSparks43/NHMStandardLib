@@ -434,6 +434,26 @@ multilinePlot <- function(dataSrc,t_title,xlabel,ylabel,xdataName,ydataName,yUni
     theme(text = element_text(size = 20))
 }
 
+#' Create a plot with multiple areas
+#' @examples
+#' d<-data.frame()
+#' d<-rbind(d,data.frame(age=c(18:100),Legend="male",weight=rnorm(83,100,10)))
+#' d<-rbind(d,data.frame(age=c(18:100),Legend="female",weight=rnorm(83,80,5)))
+#' multilineAreaPlot(d,"Random Weight Graph","Age","Weight(kg)",age,weight)
+#'
+#' @export
+multilineAreaPlot <- function(dataSrc,t_title,xlabel,ylabel,xdataName,ydataName,yUnits="",seqB=0,seqE=110,seqBy=10){
+  dataSrc$Legend<-getg11nSafeVector(dataSrc$Legend)
+  ggplot(data = dataSrc, aes(x={{xdataName}}, y = {{ydataName}},color=Legend,fill=Legend, linetype = Legend)) +
+    geom_area(position = 'stack')+
+    scale_x_continuous(breaks = seq(seqB, seqE, by = seqBy)) +
+    scale_color_manual(values=nhmDefaultColors()) +
+    scale_shape_manual(values = nhmDefaultShapes()) +
+    scale_y_continuous(labels = human_num) +
+    labs(x=getg11nSafe(xlabel), y=getg11nSafe(ylabel), title=getg11nSafe(t_title)) +
+    theme(text = element_text(size = 20))
+}
+
 #' create a barchartPlot
 #'
 #' @param dataSrc dataframe data source

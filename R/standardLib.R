@@ -447,7 +447,7 @@ multilineAreaPlot <- function(dataSrc,t_title,xlabel,ylabel,xdataName,ydataName,
   ggplot(data = dataSrc, aes(x={{xdataName}}, y = {{ydataName}},color=Legend,fill=Legend, linetype = Legend)) +
     geom_area(position = 'stack')+
     scale_x_continuous(breaks = seq(seqB, seqE, by = seqBy)) +
-    scale_color_manual(values=nhmDefaultColors()) +
+    scale_fill_manual(values=nhmDefaultColors()) +
     scale_shape_manual(values = nhmDefaultShapes()) +
     scale_y_continuous(labels = human_num) +
     labs(x=getg11nSafe(xlabel), y=getg11nSafe(ylabel), title=getg11nSafe(t_title)) +

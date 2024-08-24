@@ -1,3 +1,4 @@
+#' append age Group to a dataframe
 #' @export
 appendAgeGroup <- function(x){
   retVal<-x
@@ -21,7 +22,60 @@ appendAgeGroup <- function(x){
   retVal$n<-1
   return(retVal)
 }
-#' set anaysis parameters to use with getParameters_mapFunction
+rescale<-function(in1,in2,out1,out2,val){
+  if (val < in1)
+    return (out1)
+  if (val > in2)
+    return (out2)
+  return (out1 + (out2 - out1) * (val - in1) / (in2 - in1))
+}
+getYoungMaleBMIGroup<-function(x){
+  lowers<-c(13,16.5,18.25)
+  uppers<-c(18.5,23,27.5)
+  if(x$BMI<=rescale(5,20,lowers[1],uppers[1],x$age))
+    return("Underweight")
+  if(x$BMI<=rescale(5,20,lowers[2],uppers[2],x$age))
+    return("Normal")
+  if(x$BMI<=rescale(5,20,lowers[3],uppers[3],x$age))
+    return("Overweight")
+  return("Obese")
+}
+getYoungFemaleBMIGroup<-function(x){
+  lowers<-c(12.75,17.0,18.9)
+  uppers<-c(18.5,23,27.5)
+  if(x$BMI<=rescale(5,20,lowers[1],uppers[1],x$age))
+    return("Underweight")
+  if(x$BMI<=rescale(5,20,lowers[2],uppers[2],x$age))
+    return("Normal")
+  if(x$BMI<=rescale(5,20,lowers[3],uppers[3],x$age))
+    return("Overweight")
+  return("Obese")
+}
+getBMIGroup<-function(x){
+  if(x$age<20&sex=="Male")
+    return(getYoungMaleBMIGroup(x))
+  if(x$age<20&sex=="Female")
+    return(getYoungFemaleBMIGroup(x))
+  if(x$BMI<=18.5)
+    return("Underweight")
+  if(x$BMI<=23)
+    return("Normal")
+  if(x$BMI<=27.5)
+    return("Overweight")
+  return("Obese")
+}
+
+#' append BMI and BMI Group to a dataframe
+#' @export
+appendBMIGroup <- function(x){
+  retVal<-x
+  retVal$BMI<-with(retVal,WEIGHT/((HEIGHT/100)*(HEIGHT/100)))
+  retVal$bmiGrp<-sapply(split(retVal, seq(nrow(retVal))),getBMIGroup)
+  return(retVal)
+
+}
+
+#' set analysis parameters to use with getParameters_mapFunction
 #' @param group type of parameters to extract ("Parameters" or "Tests")
 #' @param items a vector of parameters to extract
 #' @export
@@ -54,7 +108,7 @@ getParameters_mapFunction <- function(x) {
         names(aData)<-c("age",i)
         names(thisData)<-c("age","event")
 
-        if(nrow(aData)>0){
+        if(nrow(thisData)>0){
           initial<-min(thisData$age)
           aData[aData$age>=initial,i]<-1
         }

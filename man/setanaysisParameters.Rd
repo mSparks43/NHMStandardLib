@@ -2,7 +2,7 @@
 % Please edit documentation in R/NHMAnalysis.r
 \name{setanaysisParameters}
 \alias{setanaysisParameters}
-\title{set anaysis parameters to use with getParameters_mapFunction}
+\title{set analysis parameters to use with getParameters_mapFunction}
 \usage{
 setanaysisParameters(group, items)
 }
@@ -12,5 +12,5 @@ setanaysisParameters(group, items)
 \item{items}{a vector of parameters to extract}
 }
 \description{
-set anaysis parameters to use with getParameters_mapFunction
+set analysis parameters to use with getParameters_mapFunction
 }

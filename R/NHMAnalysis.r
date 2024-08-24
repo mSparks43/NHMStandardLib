@@ -46,8 +46,21 @@ getParameters_mapFunction <- function(x) {
     parameter_values<-document[[pkg.env$anaysisgrp[[typeN]]]]
     parameters<-pkg.env$anaysisParameters[[typeN]] #c("WEIGHT","HEIGHT")
     #parameters<-c("DIABETES")
+    if(pkg.env$anaysisgrp[[typeN]]=="FCEs"){
+      for(i in parameters){
+        thisData<-parameter_values[parameter_values$Diag1==i,c(3,5)]
+        thisData <- thisData %>% arrange(pAge)
+        aData<-data.frame(age,i=0)
+        names(aData)<-c("age",i)
+        names(thisData)<-c("age","event")
 
-    if(pkg.env$anaysisgrp[[typeN]]=="EQ5D"){
+        if(nrow(aData)>0){
+          initial<-min(thisData$age)
+          aData[aData$age>=initial,i]<-1
+        }
+        retVal <- merge(x = retVal, y = aData , by="age",all.x = TRUE)
+      }
+    } else if(pkg.env$anaysisgrp[[typeN]]=="EQ5D"){
       retVal <- merge(x = retVal, y = data.frame(age,EQ5D=parameter_values) , by="age",all.x = TRUE)
     } else {
       for(i in parameters){

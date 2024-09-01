@@ -1,6 +1,63 @@
 
+#' @export
+mapReduce_map_toFileList<-function(inData){
+  thisSize<-length(inData)
+  hasData<-T
+  resultDataall<-data.frame()
+  start<-1
+  end<-min(pkg.env$batchSize,length(inData))
+  length(inData)
+  retVal<-list()
+  fileList<-list()
+  while(hasData){
+    file<-tempfile()
+    dataS<-inData[c(start:end)]
+    saveRDS(dataS,file)
+    message(CONCAT("mapReduce_map create tmpdata ",start," to ",end," of ",thisSize," ",file))
+    fileList<-append(fileList,file)
+    start<-start+pkg.env$batchSize
+    end<-min(end+pkg.env$batchSize,length(inData))
+    if(start>=length(inData))
+      hasData<-F
+  }
+  return (fileList)
+}
 
+#' @export
+mapReduce_map_fromtoFileList<-function(fileList,mapFunction){
+  gc()
+  retFileList<-list()
+  for(i in fileList){
 
+    dataS<-readRDS(i)#inData[c(start:end)]
+    #unlink(i)
+    message(CONCAT("mapReduce_map Process ",i," ",length(dataS)))
+    #iLV<-parLapply(cl,dataS,fun=mapFunction)
+    iLV<-mclapply(dataS, mapFunction,mc.cores = pkg.env$numCores)
+    message(CONCAT("mapReduce_map compressList"))
+    iretVal<-list(iLV)[[1]]
+    #iretVal<-list()
+    gc()
+    message(CONCAT("mapReduce_map cleaning ",length(iretVal)))
+    iretVal<-list_drop_empty(iretVal)
+    message(CONCAT("mapReduce_map cleaned ",length(iretVal)))
+    gc()
+    #retVal<-append(retVal,iretVal)
+    message(CONCAT("mapReduce_map now ",length(iretVal)))
+    file<-tempfile()
+    saveRDS(iretVal,file)
+    message(CONCAT("mapReduce_map create new tmpdata from ",i," to ",file))
+    retFileList<-append(retFileList,file)
+  }
+  return (retFileList)
+}
+#' @export
+mapReduce_unlinkFileList<-function(fileList){
+  for(i in fileList){
+    message(CONCAT("unlink ",i))
+    unlink(i)
+  }
+}
 #' Map Reduce Map Function
 #'
 #' parse a map function over source data
@@ -133,6 +190,35 @@ mapReduce_map<-function(srcDoc,mapFunction){
 mapReduce_map_ndjson<-function(srcDoc,mapFunction){
   return(lapply(readLines(srcDoc, n=-1, warn=FALSE), mapFunction))
 }
+
+
+#' Map Reduce Reduce function for file lists
+#'
+#' Process a list of mapped dataframes and return a dataframe containing c(key) with c(functions) applied to c(summary_vars)
+#' @param fileList a file list from mapReduce_map_fromtoFileList
+#' @param key a c("key") containing the column names to group by
+#' @param functions a c("functions") to apply to the reduction
+#' @param summary_vars a c("variables") to apply the functions
+#' @return a dataframe with the result of the reduction step
+#' @examples
+#' molecules <- mapReduce_reduce(list_data,c("molecule"),c("sum"),c("count"))
+#'
+#' @export
+mapReduce_reduce_fromFilelist<-function(fileList,key, functions, summary_vars){
+  for(i in fileList){
+    keyS<-paste(key,collapse=" ")
+    message(CONCAT("mapReduce_reduce key=(",keyS,") Process ",i))
+    dataS<-readRDS(i)
+    iresultDataall<-mapReduce_reduce(dataS,key,functions,summary_vars,F)
+    iresultDataall<-rbind(resultDataall,iresultDataall)
+    resultDataall<-mapReduce_reduce(iresultDataall,key,functions,summary_vars,F)
+    message(CONCAT("mapReduce_reduce key=(",keyS,") has ",nrow(resultDataall)," rows"))
+    gc()
+
+  }
+  return(resultDataall)
+}
+
 #' Map Reduce Reduce function
 #'
 #' Process a list of mapped dataframes and return a dataframe containing c(key) with c(functions) applied to c(summary_vars)

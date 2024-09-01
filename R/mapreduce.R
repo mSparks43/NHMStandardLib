@@ -217,6 +217,7 @@ mapReduce_map_ndjson<-function(srcDoc,mapFunction){
 #'
 #' @export
 mapReduce_reduce_fromFilelist<-function(fileList,key, functions, summary_vars){
+  resultDataall<-data.frame()
   for(i in fileList){
     keyS<-paste(key,collapse=" ")
     message(CONCAT("mapReduce_reduce key=(",keyS,") Process ",i))

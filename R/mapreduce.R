@@ -223,12 +223,13 @@ mapReduce_reduce_fromFilelist<-function(fileList,key, functions, summary_vars){
     message(CONCAT("mapReduce_reduce key=(",keyS,") Process ",i))
     dataS<-readRDS(i)
     iresultDataall<-mapReduce_reduce(dataS,key,functions,summary_vars,F)
-    iresultDataall<-rbind(resultDataall,iresultDataall)
-    resultDataall<-mapReduce_reduce(iresultDataall,key,functions,summary_vars,F)
+    resultDataall<-rbind(resultDataall,iresultDataall)
     message(CONCAT("mapReduce_reduce key=(",keyS,") has ",nrow(resultDataall)," rows"))
     gc()
 
   }
+  resultDataall<-mapReduce_reduce(iresultDataall,key,functions,summary_vars,F)
+  message(CONCAT("mapReduce_reduce DONE key=(",keyS,") has ",nrow(resultDataall)," rows"))
   return(resultDataall)
 }
 
@@ -264,8 +265,8 @@ mapReduce_reduce<-function(dt_s,key, functions, summary_vars,doBatch=T){
       message(CONCAT("mapReduce_reduce key=(",keyS,") Process ",start," to ",end," of ",thisSize))
       dataS<-dt_s[c(start:end)]
       iresultDataall<-mapReduce_reduce(dataS,key,functions,summary_vars,F)
-      iresultDataall<-rbind(resultDataall,iresultDataall)
-      resultDataall<-mapReduce_reduce(iresultDataall,key,functions,summary_vars,F)
+      resultDataall<-rbind(resultDataall,iresultDataall)
+
       start<-start+pkg.env$batchSize
       end<-min(end+pkg.env$batchSize,length(dt_s))
       if(start>=length(dt_s))
@@ -273,6 +274,8 @@ mapReduce_reduce<-function(dt_s,key, functions, summary_vars,doBatch=T){
       message(CONCAT("mapReduce_reduce key=(",keyS,") has ",nrow(resultDataall)," rows"))
       gc()
     }
+    resultDataall<-mapReduce_reduce(iresultDataall,key,functions,summary_vars,F)
+    message(CONCAT("mapReduce_reduce DONE key=(",keyS,") has ",nrow(resultDataall)," rows"))
     return(resultDataall)
   }
   if(!pkg.env$registered){

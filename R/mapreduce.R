@@ -228,7 +228,7 @@ mapReduce_reduce_fromFilelist<-function(fileList,key, functions, summary_vars){
     gc()
 
   }
-  resultDataall<-mapReduce_reduce(iresultDataall,key,functions,summary_vars,F)
+  resultDataall<-mapReduce_reduce(resultDataall,key,functions,summary_vars,F)
   message(CONCAT("mapReduce_reduce DONE key=(",keyS,") has ",nrow(resultDataall)," rows"))
   return(resultDataall)
 }
@@ -274,7 +274,7 @@ mapReduce_reduce<-function(dt_s,key, functions, summary_vars,doBatch=T){
       message(CONCAT("mapReduce_reduce key=(",keyS,") has ",nrow(resultDataall)," rows"))
       gc()
     }
-    resultDataall<-mapReduce_reduce(iresultDataall,key,functions,summary_vars,F)
+    resultDataall<-mapReduce_reduce(resultDataall,key,functions,summary_vars,F)
     message(CONCAT("mapReduce_reduce DONE key=(",keyS,") has ",nrow(resultDataall)," rows"))
     return(resultDataall)
   }

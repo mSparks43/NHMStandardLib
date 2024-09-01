@@ -29,7 +29,7 @@ mapReduce_map_fromtoFileList<-function(fileList,mapFunction){
   retFileList<-list()
   for(i in fileList){
 
-    dataS<-readRDS(i)#inData[c(start:end)]
+    dataS<-readRDS(i)
     #unlink(i)
     message(CONCAT("mapReduce_map Process ",i," ",length(dataS)))
     #iLV<-parLapply(cl,dataS,fun=mapFunction)
@@ -51,12 +51,24 @@ mapReduce_map_fromtoFileList<-function(fileList,mapFunction){
   }
   return (retFileList)
 }
+
 #' @export
 mapReduce_unlinkFileList<-function(fileList){
   for(i in fileList){
     message(CONCAT("unlink ",i))
     unlink(i)
   }
+}
+#' @export
+mapReduce_merge<-function(fileList){
+  retVal<-list()
+  message(CONCAT("mapReduce merging map"))
+  for(i in fileList){
+    dataS<-readRDS(i)
+    retVal<-append(retVal,dataS)
+    message(CONCAT("mapReduce_map now ",length(retVal)))
+  }
+  return (retVal)
 }
 #' Map Reduce Map Function
 #'

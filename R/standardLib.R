@@ -30,8 +30,10 @@ folderInit <- function(){
   graphDir<<-"graphs/"
   graphSubDir<<-""
   outputDir<<-"output/"
+  tempMRDir<<-"tempMR/"
   dir.create(file.path(baseDir, graphDir), showWarnings = FALSE)
   dir.create(file.path(baseDir, outputDir), showWarnings = FALSE)
+  dir.create(file.path(baseDir, tempMRDir), showWarnings = FALSE)
 }
 
 ## Database functions

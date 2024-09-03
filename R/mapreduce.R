@@ -10,7 +10,7 @@ mapReduce_map_toFileList<-function(inData){
   retVal<-list()
   fileList<-list()
   while(hasData){
-    file<-tempfile()
+    file<-tempfile(tmpdir=tempMRDir)
     dataS<-inData[c(start:end)]
     saveRDS(dataS,file)
     message(CONCAT("mapReduce_map create tmpdata ",start," to ",end," of ",thisSize," ",file))
@@ -44,7 +44,7 @@ mapReduce_map_fromtoFileList<-function(fileList,mapFunction){
     gc()
     #retVal<-append(retVal,iretVal)
     message(CONCAT("mapReduce_map now ",length(iretVal)))
-    file<-tempfile()
+    file<-tempfile(tmpdir=tempMRDir)
     saveRDS(iretVal,file)
     message(CONCAT("mapReduce_map create new tmpdata from ",i," to ",file))
     retFileList<-append(retFileList,file)
@@ -127,7 +127,7 @@ mapReduce_map<-function(srcDoc,mapFunction){
     retVal<-list()
     fileList<-list()
     while(hasData){
-      file<-tempfile()
+      file<-tempfile(tmpdir=tempMRDir)
       dataS<-inData[c(start:end)]
       saveRDS(dataS,file)
       message(CONCAT("mapReduce_map create tmpdata ",start," to ",end," of ",thisSize," ",file))

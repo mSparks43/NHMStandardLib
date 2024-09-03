@@ -622,12 +622,12 @@ populationPyramid<-function(data,gTitle){
   basic_plot <-  ggplot(
     data,
     aes(
-      x = Starost,
-      fill = getg11nSafeVector(Pol),
+      x = age,
+      fill = getg11nSafeVector(sex),
       y = ifelse(
-        test = Pol == "M",
-        yes = -Populacija,
-        no = Populacija
+        test = sex == "M",
+        yes = -Population,
+        no = Population
       )
     )
   ) +
@@ -638,14 +638,14 @@ populationPyramid<-function(data,gTitle){
   population_pyramid <- basic_plot +
     scale_y_continuous(
       labels = abs,
-      limits = max(data$Populacija) * c(-1,1)
+      limits = max(data$Population) * c(-1,1)
     ) +
     coord_flip() +
     theme_minimal() +
     labs(
-      x = getg11nSafe("Starost"),
-      y = getg11nSafe("Populacija"),
-      fill = getg11nSafe("Pol"),
+      x = getg11nSafe("age"),
+      y = getg11nSafe("Population"),
+      fill = getg11nSafe("sex"),
       title = getg11nSafe(gTitle)
     )
   return(population_pyramid)

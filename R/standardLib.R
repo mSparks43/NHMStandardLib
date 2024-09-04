@@ -22,6 +22,7 @@ pkg.env$registered <- FALSE
 pkg.env$clusterObject <- NULL
 pkg.env$anaysisgrp<-"Parameters"
 pkg.env$anaysisParameters<-c("WEIGHT","HEIGHT")
+pkg.env$palette<-"default"
 #' get standard folder names for current working directory
 #' @export
 folderInit <- function(){
@@ -429,7 +430,7 @@ multilinePlot <- function(dataSrc,t_title,xlabel,ylabel,xdataName,ydataName,yUni
   ggplot(data = dataSrc, aes(x={{xdataName}}, y = {{ydataName}},color=Legend,shape=Legend, linetype = Legend)) +
     geom_line() + geom_point()+
     scale_x_continuous(breaks = seq(seqB, seqE, by = seqBy)) +
-    scale_color_manual(values=nhmDefaultColors()) +
+    scale_color_manual(values=nhmGetPalette()) +
     scale_shape_manual(values = nhmDefaultShapes()) +
     scale_y_continuous(labels = human_num) +
     labs(x=getg11nSafe(xlabel), y=getg11nSafe(ylabel), title=getg11nSafe(t_title)) +
@@ -449,7 +450,7 @@ multilineAreaPlot <- function(dataSrc,t_title,xlabel,ylabel,xdataName,ydataName,
   ggplot(data = dataSrc, aes(x={{xdataName}}, y = {{ydataName}},color=Legend,fill=Legend, linetype = Legend)) +
     geom_area(position = 'stack')+
     scale_x_continuous(breaks = seq(seqB, seqE, by = seqBy)) +
-    scale_fill_manual(values=nhmDefaultColors()) +
+    scale_fill_manual(values=nhmGetPalette()) +
     scale_shape_manual(values = nhmDefaultShapes()) +
     scale_y_continuous(labels = human_num) +
     labs(x=getg11nSafe(xlabel), y=getg11nSafe(ylabel), title=getg11nSafe(t_title)) +
@@ -470,7 +471,7 @@ barchartPlot <- function(dataSrc,t_title,xlabel,ylabel,xdataName,ydataName){
   ggplot(data= dataSrc, aes(x={{xdataName}}, y={{ydataName}}, fill=Legend)) +
     geom_bar(stat='identity', position='dodge') +
     theme(axis.text.x = element_text(angle=90, vjust=0.5, hjust=1))+
-    scale_fill_manual(values=nhmDefaultColors()) +
+    scale_fill_manual(values=nhmGetPalette()) +
     labs(x=xlabel, y=ylabel, title=t_title) +
     scale_y_continuous(labels = human_numbers)
 }

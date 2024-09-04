@@ -292,7 +292,7 @@ PieDonut<-function (data, mapping, start = getOption("PieDonut.start",
   if (!is.factor(df[[pies]]))
     df[[pies]] <- factor(df[[pies]])
   df
-  mainCol = nhmDefaultColors()# gg_color_hue(nrow(df))
+  mainCol = nhmGetPalette()# gg_color_hue(nrow(df))
   df$radius = r1
   df$radius[df$focus != 0] = df$radius[df$focus != 0] + df$focus[df$focus !=
                                                                    0]
@@ -567,8 +567,29 @@ theme_no_axes <- function(base.theme = theme_bw()) {
 }
 
 #' @export
+nhmSetPalette <- function(value){
+  pkg.env$palette=value
+}
+
+#' @export
+nhmGetPalette <- function(){
+  if(is.vector(pkg.env$palette)&&length(pkg.env$palette)>1)
+    retVal<-pkg.env$palette
+  else if(pkg.env$palette=="bold")
+    retVal<-nhmBoldColors()
+  else
+    retVal<-nhmDefaultColors()
+  return(retVal)
+}
+
+#' @export
 nhmDefaultColors <- function(){
   retVal<-c("#6D9DC5","#80DED9","#068D9D","#acf47d","#53599A","#0f6d96","#1c92f4","#09c61a","#30bf9d")
+  return(retVal)
+}
+#' @export
+nhmBoldColors <- function(){
+  retVal<-c("#6D9DC5","#84371e","#068D9D","#533e30","#53599A","#0f6d96","#1c92f4","#7c1328","#30bf9d")
   return(retVal)
 }
 nhmDefaultShapes <- function(){
@@ -615,6 +636,10 @@ doublePie<-function(data,chart_title,firstCol,secondCol,countCol,threshold=0.001
              titlesize = 15, start = 3.5)
 }
 
+
+#' Create a Population Pyramid graph
+#' @param data data containing the age,sex and population size data : data.frame(age,sex,Population)
+#' @param gTitle The title to put on the graph
 #' @export
 populationPyramid<-function(data,gTitle){
 
@@ -632,7 +657,7 @@ populationPyramid<-function(data,gTitle){
     )
   ) +
     geom_bar(stat = "identity")+
-    scale_fill_manual(values=nhmDefaultColors())
+    scale_fill_manual(values=nhmGetPalette())
 
   # Create population pyramids for both genders and combine them
   population_pyramid <- basic_plot +
@@ -740,7 +765,7 @@ waterFallGraph<-function(data,graphTitle,yTitle,xaxis,category,valueField,thresh
     fontface = "bold"
   ) +
     # \_Change colors ----
-  scale_fill_manual(values=nhmDefaultColors()) +
+  scale_fill_manual(values=nhmGetPalette()) +
     # \_Change y axis to same scale as original ----
 
   # \_Add tick marks on x axis to look like the original plot ----

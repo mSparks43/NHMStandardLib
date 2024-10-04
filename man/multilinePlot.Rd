@@ -14,7 +14,8 @@ multilinePlot(
   yUnits = "",
   seqB = 0,
   seqE = 110,
-  seqBy = 10
+  seqBy = 10,
+  textSize = 20
 )
 }
 \description{

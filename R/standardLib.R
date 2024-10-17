@@ -445,7 +445,7 @@ multilinePlot <- function(dataSrc,t_title,xlabel,ylabel,xdataName,ydataName,yUni
 #' multilineAreaPlot(d,"Random Weight Graph","Age","Weight(kg)",age,weight)
 #'
 #' @export
-multilineAreaPlot <- function(dataSrc,t_title,xlabel,ylabel,xdataName,ydataName,yUnits="",seqB=0,seqE=110,seqBy=10){
+multilineAreaPlot <- function(dataSrc,t_title,xlabel,ylabel,xdataName,ydataName,yUnits="",seqB=0,seqE=110,seqBy=10,textSize=20){
   dataSrc$Legend<-getg11nSafeVector(dataSrc$Legend)
   ggplot(data = dataSrc, aes(x={{xdataName}}, y = {{ydataName}},color=Legend,fill=Legend, linetype = Legend)) +
     geom_area(position = 'stack')+
@@ -454,7 +454,7 @@ multilineAreaPlot <- function(dataSrc,t_title,xlabel,ylabel,xdataName,ydataName,
     scale_shape_manual(values = nhmDefaultShapes()) +
     scale_y_continuous(labels = human_num) +
     labs(x=getg11nSafe(xlabel), y=getg11nSafe(ylabel), title=getg11nSafe(t_title)) +
-    theme(text = element_text(size = 20))
+    theme(text = element_text(size = textSize))
 }
 
 #' create a barchartPlot

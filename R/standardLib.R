@@ -1,5 +1,5 @@
 # NHM Stadard R Library
-# Helper functions for analysts working with Nation Health Model datasets
+# Helper functions for analysts working with National Health Model datasets
 # Zem Solutions, all rights reserved.
 # use `rm(list=ls());roxygen2::roxygenise()` to build
 
@@ -128,6 +128,31 @@ SpreadsheetLettersToNumbers <- function(s){
   # Calculate the column number
   column_number <- sum(s_number * numbers)
   column_number
+}
+
+#' Convert Excel column numbers into letters
+#'
+#' @param col the column number (e.g. 702)
+#' @param row the row number (e.g. 25)
+#' @return The string for use in spreadsheet functions (e.g. ZZ25)
+#'
+#' @export
+SpreadsheetNumbersToLetters <- function(col,row){
+  divmod_excel<-function(n){
+    rV<-c((n%/%26),(n%%26))
+    if (rV[2] == 0)
+      return (c((rV[1] - 1), (rV[2] + 26)))
+    return(rV)
+  }
+
+  retVal<-c()
+  while(col>0){
+    cV<-divmod_excel(col)
+    retVal<-append(retVal,LETTERS[cV[2]])
+    col<-cV[1]
+  }
+  retVal<-append(retVal,row)
+  return(paste(retVal,collapse=""))
 }
 
 #' @export

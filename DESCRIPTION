@@ -10,7 +10,6 @@ License: All rights reserved
 Encoding: UTF-8
 LazyData: true
 Depends:
-  readxl,
   openxlsx,
   xlsx,
   stringr,

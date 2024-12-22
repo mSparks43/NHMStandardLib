@@ -122,12 +122,24 @@ SpreadsheetLettersToNumbers <- function(s){
   # Convert string to a vector of single letters
   s_split <- unlist(strsplit(s_upper, split=""))
   # Convert each letter to the corresponding number
-  s_number <- sapply(s_split, function(x) {which(LETTERS == x)})
+  rNum<-""
+
+  s_number <- sapply(s_split, function(x) {return(which(LETTERS == x))})
+  rNum<-""
+  rowStart <- -1
+  for(i in 1:length(s_number)){
+    if(!is.na(suppressWarnings(as.numeric (names(s_number[i]))))){
+      rNum<-CONCAT(rNum,names(s_number[i]))
+      if(rowStart<0)
+        rowStart <- i-1
+    }
+
+  }
   # Derive the numeric value associated with each letter
-  numbers <- 26^((length(s_number)-1):0)
+  numbers <- 26^((rowStart-1):0)
   # Calculate the column number
-  column_number <- sum(s_number * numbers)
-  column_number
+  column_number <- sum(s_number[c(1:rowStart)][[1]] * numbers)
+  return(c(column_number,as.numeric(rNum)))
 }
 
 #' Convert Excel column numbers into letters

@@ -123,22 +123,20 @@ SpreadsheetLettersToNumbers <- function(s){
   s_split <- unlist(strsplit(s_upper, split=""))
   # Convert each letter to the corresponding number
   rNum<-""
-
-  s_number <- sapply(s_split, function(x) {return(which(LETTERS == x))})
+  cString<-""
   rNum<-""
   rowStart <- -1
-  for(i in 1:length(s_number)){
-    if(!is.na(suppressWarnings(as.numeric (names(s_number[i]))))){
-      rNum<-CONCAT(rNum,names(s_number[i]))
+  for(i in 1:length(s_split)){
+    if(!is.na(suppressWarnings(as.numeric (s_split[i])))){
+      rNum<-CONCAT(rNum,s_split[i])
       if(rowStart<0)
         rowStart <- i-1
+    } else {
+      cString<-CONCAT(cString,s_split[i])
     }
 
   }
-  # Derive the numeric value associated with each letter
-  numbers <- 26^((rowStart-1):0)
-  # Calculate the column number
-  column_number <- sum(s_number[c(1:rowStart)][[1]] * numbers)
+  column_number <- col2int(cString)
   return(c(column_number,as.numeric(rNum)))
 }
 
@@ -150,20 +148,8 @@ SpreadsheetLettersToNumbers <- function(s){
 #'
 #' @export
 SpreadsheetNumbersToLetters <- function(col,row){
-  divmod_excel<-function(n){
-    rV<-c((n%/%26),(n%%26))
-    if (rV[2] == 0)
-      return (c((rV[1] - 1), (rV[2] + 26)))
-    return(rV)
-  }
 
-  retVal<-c()
-  while(col>0){
-    cV<-divmod_excel(col)
-    retVal<-append(retVal,LETTERS[cV[2]])
-    col<-cV[1]
-  }
-  retVal<-append(retVal,row)
+  retVal<-append(int2col(col),row)
   return(paste(retVal,collapse=""))
 }
 

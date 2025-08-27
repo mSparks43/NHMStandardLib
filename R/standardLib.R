@@ -358,6 +358,21 @@ can_numeric<-function(x){
 g11n_numbers <- function(x = NULL, signif = 1, smbl =""){
   if(is.null(x))
     return(NULL)
+  if(all(is.numeric(x))){
+    if(pkg.env$g11n=="sr"){
+      rV<-format(round(x,digits=signif),big.mark=".",decimal.mark=",")
+      return(rV)
+    }
+    else if(pkg.env$g11n=="en")
+    {
+      return(format(round(x,digits=signif),big.mark=",",decimal.mark="."))
+    }
+    else if(pkg.env$g11n=="pl"){
+      return(format(round(x,digits=signif),big.mark=" ",decimal.mark=","))
+    }
+    else
+      stop("unknown g11n")
+  }
   x<-x%>%mutate_if(can_numeric, as.numeric)
   x<-x%>%mutate_if(is.numeric, round,digits=signif)
   if(pkg.env$g11n=="sr"){

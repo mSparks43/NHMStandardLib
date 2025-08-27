@@ -351,6 +351,24 @@ human_numbers <- function(x = NULL, smbl ="", signif = 1){
   else
     stop("unknown g11n")
 }
+g11n_numbers <- function(x = NULL, signif = 1, smbl =""){
+  if(is.null(x))
+    return(NULL)
+  x<-x%>%mutate_if(is.numeric, round,digits=signif)
+  if(pkg.env$g11n=="sr"){
+    x<-x%>%mutate_if(is.numeric, format,big.mark=".",decimal.mark=",")
+  }
+  else if(pkg.env$g11n=="en")
+  {
+    x<-x%>%mutate_if(is.numeric, format,big.mark=",",decimal.mark=".")
+  }
+  else if(pkg.env$g11n=="pl"){
+    x<-x%>%mutate_if(is.numeric, format,big.mark=" ",decimal.mark=",")
+  }
+  else
+    stop("unknown g11n")
+  return(x)
+}
 human_numbers_sr <- function(x = NULL, smbl ="", signif = 1){
   humanity <- function(y){
 

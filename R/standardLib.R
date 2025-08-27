@@ -351,6 +351,7 @@ human_numbers <- function(x = NULL, smbl ="", signif = 1){
   else
     stop("unknown g11n")
 }
+#' @export
 g11n_numbers <- function(x = NULL, signif = 1, smbl =""){
   if(is.null(x))
     return(NULL)
@@ -367,6 +368,7 @@ g11n_numbers <- function(x = NULL, signif = 1, smbl =""){
   }
   else
     stop("unknown g11n")
+  names(x)<-str_replace(names(x),"_"," ")
   return(x)
 }
 human_numbers_sr <- function(x = NULL, smbl ="", signif = 1){

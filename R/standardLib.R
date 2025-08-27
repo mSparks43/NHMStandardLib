@@ -433,10 +433,8 @@ human_numbers_pl <- function(x = NULL, smbl ="", signif = 1){
         y_is_positive <- "-"
       }
 
-      if ( k < 1 ) {
-        paste0( y_is_positive, smbl, round(abs(y), signif ))
-      } else if ( m < 1){
-        paste0 (y_is_positive, smbl, format(k, big.mark=" ",decimal.mark=",")  , " mld.")
+      if ( m < 1){
+        paste0 (y_is_positive, smbl, format(abs(y), big.mark=" ",decimal.mark=","))
       } else if (b < 1){
         paste0 (y_is_positive, smbl, format(m, big.mark=" ",decimal.mark=",") ," tys.")
       }else if(tn < 1){

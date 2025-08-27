@@ -805,7 +805,8 @@ waterFallGraph<-function(data,graphTitle,yTitle,xaxis,category,valueField,thresh
                                       face = "bold",
                                       margin = margin(l = 0.25, unit = "cm")
     ),
-    legend.title =       element_blank()
+    legend.title =       element_blank(),
+    legend.position = "bottom"
   ) +
     scale_y_continuous(labels = human_numbers) +
     labs(size = fontSize*4,x="xlabel", y=getg11nSafe(yTitle), title=getg11nSafe(graphTitle))

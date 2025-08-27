@@ -743,7 +743,7 @@ waterFallGraph<-function(data,graphTitle,yTitle,xaxis,category,valueField,thresh
   geom_text(
     mapping =
       aes(
-        label = ifelse(values > threshold,human_numbers(values),""),
+        label = ifelse(abs(values) > threshold,human_numbers(values),""),
         y = rowSums(cbind(start.Bar,values/2))
       ),
     size = fontSize,

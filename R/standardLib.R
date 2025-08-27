@@ -369,7 +369,7 @@ g11n_numbers <- function(x = NULL, signif = 1, smbl =""){
   else
     stop("unknown g11n")
   names(x)<-str_replace(names(x),"_"," ")
-  names(x)<-str_replace(names(x),"."," ")
+  names(x)<-str_replace(names(x),"\\."," ")
   return(x)
 }
 human_numbers_sr <- function(x = NULL, smbl ="", signif = 1){

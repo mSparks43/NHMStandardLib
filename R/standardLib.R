@@ -346,6 +346,8 @@ human_numbers <- function(x = NULL, smbl ="", signif = 1){
     return(human_numbers_sr(x,smbl,signif))
   else if(pkg.env$g11n=="en")
     return(human_numbers_en(x,smbl,signif))
+  else if(pkg.env$g11n=="pl")
+    return(human_numbers_pl(x,smbl,signif))
   else
     stop("unknown g11n")
 }
@@ -408,6 +410,40 @@ human_numbers_en <- function(x = NULL, smbl ="", signif = 1){
         paste0 (y_is_positive, smbl, b ,"bn")
       } else {
         paste0 (y_is_positive, smbl,  comma(tn), "tn")
+      }
+    } else if (is.na(y) | is.null(y)){
+      "-"
+    }
+  }
+
+  sapply(x,humanity)
+}
+human_numbers_pl <- function(x = NULL, smbl ="", signif = 1){
+  humanity <- function(y){
+
+    if (!is.na(y)){
+      tn <- round(abs(y) / 1e12, signif)
+      b <- round(abs(y) / 1e9, signif)
+      m <- round(abs(y) / 1e6, signif)
+      k <- round(abs(y) / 1e3, signif)
+
+      if ( y >= 0 ){
+        y_is_positive <- ""
+      } else {
+        y_is_positive <- "-"
+      }
+
+      if ( k < 1 ) {
+        paste0( y_is_positive, smbl, round(abs(y), signif ))
+      } else if ( m < 1){
+        paste0 (y_is_positive, smbl, format(k, big.mark=" ",decimal.mark=",")  , " mld.")
+      } else if (b < 1){
+        paste0 (y_is_positive, smbl, format(m, big.mark=" ",decimal.mark=",") ," tys.")
+      }else if(tn < 1){
+        #paste0 (y_is_positive, smbl, b ,"bn")
+        paste0 (y_is_positive, smbl, format(b, big.mark=" ",decimal.mark=",") ," mln.")
+      } else {
+        paste0 (y_is_positive, smbl,  format(tn, big.mark=" ",decimal.mark=","), "mld.")
       }
     } else if (is.na(y) | is.null(y)){
       "-"

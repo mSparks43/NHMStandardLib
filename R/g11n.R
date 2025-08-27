@@ -51,7 +51,7 @@ getg11n<-function(textSearch){
     stop(CONCAT("No g11n for ",textSearch,"lang=",pkg.env$g11n))
   return(iRow$text)
 }
-
+#' @export
 getg11nSafeVector<-function(vectortextSearch){
   if(!is.vector(vectortextSearch))
     stop("not a vector")

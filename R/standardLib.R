@@ -352,7 +352,7 @@ human_numbers <- function(x = NULL, smbl ="", signif = 1){
     stop("unknown g11n")
 }
 can_numeric<-function(x){
-  return(!is.na(as.numeric(x)))
+  return(suppressWarnings(all(!is.na(as.numeric(x)))))
 }
 #' @export
 g11n_numbers <- function(x = NULL, signif = 1, smbl =""){

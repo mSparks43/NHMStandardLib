@@ -351,10 +351,14 @@ human_numbers <- function(x = NULL, smbl ="", signif = 1){
   else
     stop("unknown g11n")
 }
+can_numeric<-function(x){
+  return(!is.na(as.numeric(x)))
+}
 #' @export
 g11n_numbers <- function(x = NULL, signif = 1, smbl =""){
   if(is.null(x))
     return(NULL)
+  x<-x%>%mutate_if(can_numeric, as.numeric)
   x<-x%>%mutate_if(is.numeric, round,digits=signif)
   if(pkg.env$g11n=="sr"){
     x<-x%>%mutate_if(is.numeric, format,big.mark=".",decimal.mark=",")

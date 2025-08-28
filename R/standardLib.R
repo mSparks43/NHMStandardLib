@@ -561,8 +561,8 @@ theme_zem <- function(x, ...) {
 }
 
 #' @export
-get_flextable<-function(df,cation,table_width=8,pad=3,fontsz=8,usebooktabs=true,useZemTheme=TRUE,usevanilla=FALSE){
-  ft <- flextable(df)
+get_flextable<-function(df,cation,table_width=8,signif=2,pad=3,fontsz=8,usebooktabs=true,useZemTheme=TRUE,usevanilla=FALSE){
+  ft <- flextable(g11n_numbers(df,signif))
   ft <- set_caption(ft,caption=getg11n(caption))
   if(usevanilla)
     ft <- theme_vanilla(ft)

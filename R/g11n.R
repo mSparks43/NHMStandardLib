@@ -104,8 +104,8 @@ g11n_numbers <- function(x = NULL, signif = 1, smbl =""){
   }
   else
     stop("unknown g11n")
-  names(x)<-str_replace(names(x),"_"," ")
-  names(x)<-str_replace(names(x),"\\."," ")
+  names(x)<-str_replace_all(names(x),"_"," ")
+  names(x)<-str_replace_all(names(x),"\\."," ")
   names(x)<-getg11nSafeVector(names(x))
   return(x)
 }

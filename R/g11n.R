@@ -60,6 +60,7 @@ getg11nSafeVector<-function(vectortextSearch){
   }
   return(vectortextSearch)
 }
+#' @export
 getg11nSafe<-function(textSearch){
   id<-getg11nID(textSearch)
   if(is.na(id)|| id<=0)
@@ -69,6 +70,45 @@ getg11nSafe<-function(textSearch){
     return(textSearch)
   return(iRow$text)
 }
+#' @export
+g11n_numbers <- function(x = NULL, signif = 1, smbl =""){
+  if(is.null(x))
+    return(NULL)
+  if(all(is.numeric(x))){
+    if(pkg.env$g11n=="sr"){
+      rV<-format(round(x,digits=signif),big.mark=".",decimal.mark=",")
+      return(rV)
+    }
+    else if(pkg.env$g11n=="en")
+    {
+      return(format(round(x,digits=signif),big.mark=",",decimal.mark="."))
+    }
+    else if(pkg.env$g11n=="pl"){
+      return(format(round(x,digits=signif),big.mark=" ",decimal.mark=","))
+    }
+    else
+      stop("unknown g11n")
+  }
+  x<-x%>%mutate_if(can_numeric, as.numeric)
+  x<-x%>%mutate_if(is.numeric, round,digits=signif)
+  if(pkg.env$g11n=="sr"){
+    x<-x%>%mutate_if(is.numeric, format,big.mark=".",decimal.mark=",")
+  }
+  else if(pkg.env$g11n=="en")
+  {
+    x<-x%>%mutate_if(is.numeric, format,big.mark=",",decimal.mark=".")
+  }
+  else if(pkg.env$g11n=="pl"){
+    x<-x%>%mutate_if(is.numeric, format,big.mark=" ",decimal.mark=",")
+  }
+  else
+    stop("unknown g11n")
+  names(x)<-str_replace(names(x),"_"," ")
+  names(x)<-str_replace(names(x),"\\."," ")
+  names(x)<-getg11nSafeVector(names(x))
+  return(x)
+}
+
 #' @export
 importg11n<-function(file_ndjson){
   pkg.env$g11n_data<-data.frame()

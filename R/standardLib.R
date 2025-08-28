@@ -354,7 +354,9 @@ human_numbers <- function(x = NULL, smbl ="", signif = 1){
 can_numeric<-function(x){
   return(suppressWarnings(all(!is.na(as.numeric(x)))))
 }
-
+not_can_numeric<-function(x){
+  return(suppressWarnings(!all(!is.na(as.numeric(x)))))
+}
 human_numbers_sr <- function(x = NULL, smbl ="", signif = 1){
   humanity <- function(y){
 

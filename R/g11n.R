@@ -91,6 +91,7 @@ g11n_numbers <- function(x = NULL, signif = 1, smbl =""){
   }
   x<-x%>%mutate_if(can_numeric, as.numeric)
   x<-x%>%mutate_if(is.numeric, round,digits=signif)
+  x<-x%>%mutate_if(not_can_numeric, getg11nSafeVector)
   if(pkg.env$g11n=="sr"){
     x<-x%>%mutate_if(is.numeric, format,big.mark=".",decimal.mark=",")
   }

@@ -75,3 +75,10 @@ importg11n<-function(file_ndjson){
   v<-lapply(readLines(file_ndjson, n=-1, warn=FALSE), addg11n)
 
 }
+#' @export
+importxlg11n<-function(excel_filename){
+  tTable <- read_excel(excel_filename,sheet=1)
+  for(i in 1:nrow(tTable)){
+    addg11n(toJSON(as.list(tTable[i,])))
+  }
+}

@@ -555,7 +555,6 @@ writePlot <- function(fileName,plotFunction,use.print=TRUE,aspectRatio=0.5){
 }
 #' @export
 theme_zem <- function(x, ...) {
-  x <- font(x, part = "all", fontname = "Calibri")
   x <- line_spacing(x, space = 2, part = "all")
   x <- align(x, align = "center", part = "all")
   x <- valign(x, valign = "center", part = "all")
@@ -566,6 +565,7 @@ theme_zem <- function(x, ...) {
 get_flextable<-function(df,caption,table_width=8,signif=2,pad=3,fontsz=8,usebooktabs=TRUE,useZemTheme=TRUE,usevanilla=FALSE){
   ft <- flextable(g11n_numbers(df,signif))
   ft <- set_caption(ft,caption=getg11n(caption))
+  ft <- ftExtra::colformat_md(ft)
   if(usevanilla)
     ft <- theme_vanilla(ft)
   if(usebooktabs)
@@ -574,7 +574,7 @@ get_flextable<-function(df,caption,table_width=8,signif=2,pad=3,fontsz=8,usebook
     ft <- theme_zem(ft)
   ft<- padding(ft,padding =pad,part="all")
   ft <- fontsize(ft, size = fontsz,part="all")
-
+  ft <- font(ft, part = "all", fontname = "Calibri")
   ft <- autofit(ft)
   ft <- width(ft, width = dim(ft)$widths*table_width /(flextable_dim(ft)$widths))
   return(ft)

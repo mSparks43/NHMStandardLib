@@ -551,3 +551,29 @@ writePlot <- function(fileName,plotFunction,use.print=TRUE,aspectRatio=0.5){
   dev.off()
   setwd(baseDir)
 }
+#' @export
+theme_zem <- function(x, ...) {
+  x <- font(x, part = "all", fontname = "Calibri")
+  x <- line_spacing(x, space = 2, part = "all")
+  x <- align(x, align = "center", part = "all")
+  x <- valign(x, valign = "center", part = "all")
+  fix_border_issues(x)
+}
+
+#' @export
+get_flextable<-function(df,cation,table_width=8,pad=3,fontsz=8,usebooktabs=true,useZemTheme=TRUE,usevanilla=FALSE){
+  ft <- flextable(df)
+  ft <- set_caption(ft,caption=getg11n(caption))
+  if(usevanilla)
+    ft <- theme_vanilla(ft)
+  if(usebooktabs)
+    ft <- theme_booktabs(ft)
+  if(useZemTheme)
+    ft <- theme_zem(ft)
+  ft<- padding(ft,padding =pad,part="all")
+  ft <- fontsize(ft, size = fontsz,part="all")
+
+  ft <- autofit(ft)
+  ft <- width(ft, width = dim(ft)$widths*table_width /(flextable_dim(ft)$widths))
+  return(ft)
+}

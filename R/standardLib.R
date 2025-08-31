@@ -101,13 +101,13 @@ excel_doc <- function(filename,y=0,sheet=1,col = TRUE){
 
 #' @export
 startWorkBook <- function(){
-  wb<-createWorkbook(type="xlsx")
-  TABLE_ROWNAMES_STYLE <- CellStyle(wb) + Font(wb, isBold=TRUE)
-  TABLE_COLNAMES_STYLE <- CellStyle(wb) + Font(wb, isBold=TRUE) +
-    Alignment(wrapText=TRUE, horizontal="ALIGN_CENTER") +
-    Border(color="black", position=c("TOP", "BOTTOM"),
+  pkg.env$workbook<-xlsx::createWorkbook(type="xlsx")
+  TABLE_ROWNAMES_STYLE <- xlsx::CellStyle(wb) + xlsx::Font(wb, isBold=TRUE)
+  TABLE_COLNAMES_STYLE <- xlsx::CellStyle(wb) + xlsx::Font(wb, isBold=TRUE) +
+    xlsx::Alignment(wrapText=TRUE, horizontal="ALIGN_CENTER") +
+    xlsx::Border(color="black", position=c("TOP", "BOTTOM"),
            pen=c("BORDER_THIN", "BORDER_THICK"))
-  return (wb)
+
 }
 
 #' Convert Excel column letters into numbers
@@ -156,7 +156,7 @@ SpreadsheetNumbersToLetters <- function(col,row){
 #' @export
 putExcel<- function(dFrame,sheet,x = 1,y = 1,nameCols=TRUE){
   createWS <- TRUE
-  workSheets<-getSheets(workbook)
+  workSheets<-xlsx::getSheets(pkg.env$workbook)
   for (sheetName in names(workSheets)){
     if (sheetName == sheet) {
       createWS <- FALSE
@@ -165,20 +165,20 @@ putExcel<- function(dFrame,sheet,x = 1,y = 1,nameCols=TRUE){
   if(createWS){
     #addWorksheet(workbook, sheet)
     print(CONCAT("Create sheet:",sheet))
-    createSheet(workbook, sheetName = sheet)
+    xlsx::createSheet(pkg.env$workbook, sheetName = sheet)
   }
-  workSheets<-getSheets(workbook)
-  TABLE_ROWNAMES_STYLE <- CellStyle(workbook) + Font(workbook, isBold=TRUE)
-  TABLE_COLNAMES_STYLE <- CellStyle(workbook) + Font(workbook, isBold=TRUE) +
-    Alignment(wrapText=TRUE, horizontal="ALIGN_CENTER") +
-    Border(color="black", position=c("TOP", "BOTTOM"),
+  workSheets<-xlsx::getSheets(pkg.env$workbook)
+  TABLE_ROWNAMES_STYLE <- xlsx::CellStyle(pkg.env$workbook) + xlsx::Font(pkg.env$workbook, isBold=TRUE)
+  TABLE_COLNAMES_STYLE <- xlsx::CellStyle(pkg.env$workbook) + xlsx::Font(pkg.env$workbook, isBold=TRUE) +
+    xlsx::Alignment(wrapText=TRUE, horizontal="ALIGN_CENTER") +
+    xlsx::Border(color="black", position=c("TOP", "BOTTOM"),
            pen=c("BORDER_THIN", "BORDER_THICK"))
   #writeData(workbook, sheet, dFrame, startRow = y, startCol = x,colNames=nameCols)
-  addDataFrame(dFrame, workSheets[[sheet]], startRow=y, startColumn=x,
+  xlsx::addDataFrame(dFrame, workSheets[[sheet]], startRow=y, startColumn=x,
                colnamesStyle = TABLE_COLNAMES_STYLE,
                rownamesStyle = TABLE_ROWNAMES_STYLE)
   # Change column width
-  setColumnWidth(workSheets[[sheet]], colIndex=c(1:ncol(state.x77)), colWidth=11)
+  xlsx::setColumnWidth(workSheets[[sheet]], colIndex=c(1:ncol(state.x77)), colWidth=11)
   #setRowHeight(workSheets[[sheet]], rows=c(1), inPoints=22)
 }
 
@@ -187,7 +187,7 @@ saveExcel<-function(filename){
   setwd(baseDir)
   setwd(outputDir)
   print(CONCAT("Saving Excel file:",baseDir,outputDir,filename))
-  saveWorkbook(workbook, file = filename)
+  saveWorkbook(pkg.env$workbook, file = filename)
   setwd(baseDir)
 }
 

@@ -102,8 +102,8 @@ excel_doc <- function(filename,y=0,sheet=1,col = TRUE){
 #' @export
 startWorkBook <- function(){
   pkg.env$workbook<-xlsx::createWorkbook(type="xlsx")
-  TABLE_ROWNAMES_STYLE <- xlsx::CellStyle(wb) + xlsx::Font(wb, isBold=TRUE)
-  TABLE_COLNAMES_STYLE <- xlsx::CellStyle(wb) + xlsx::Font(wb, isBold=TRUE) +
+  TABLE_ROWNAMES_STYLE <- xlsx::CellStyle(pkg.env$workbook) + xlsx::Font(pkg.env$workbook, isBold=TRUE)
+  TABLE_COLNAMES_STYLE <- xlsx::CellStyle(pkg.env$workbook) + xlsx::Font(pkg.env$workbook, isBold=TRUE) +
     xlsx::Alignment(wrapText=TRUE, horizontal="ALIGN_CENTER") +
     xlsx::Border(color="black", position=c("TOP", "BOTTOM"),
            pen=c("BORDER_THIN", "BORDER_THICK"))

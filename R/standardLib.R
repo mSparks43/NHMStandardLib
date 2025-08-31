@@ -187,7 +187,7 @@ saveExcel<-function(filename){
   setwd(baseDir)
   setwd(outputDir)
   print(CONCAT("Saving Excel file:",baseDir,outputDir,filename))
-  saveWorkbook(pkg.env$workbook, file = filename)
+  xlsx::saveWorkbook(pkg.env$workbook, file = filename)
   setwd(baseDir)
 }
 

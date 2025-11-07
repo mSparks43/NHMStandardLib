@@ -680,7 +680,7 @@ populationPyramid<-function(data,gTitle){
 #'
 
 #' @export
-waterFallGraph<-function(data,graphTitle,yTitle,xaxis,category,valueField,threshold=80000000,fontSize=3){
+waterFallGraph<-function(data,graphTitle,yTitle,xaxis,category,valueField,threshold=80000000,fontSize=3,xangle=25){
   df <-
     data.frame(
       x.axis.Var = getg11nSafeVector(data[,xaxis][[1]]),
@@ -743,7 +743,7 @@ waterFallGraph<-function(data,graphTitle,yTitle,xaxis,category,valueField,thresh
   geom_text(
     mapping =
       aes(
-        label = ifelse(values > threshold,human_numbers(values),""),
+        label = ifelse(abs(values) > abs(threshold),human_numbers(values),""),
         y = rowSums(cbind(start.Bar,values/2))
       ),
     size = fontSize,
@@ -758,7 +758,7 @@ waterFallGraph<-function(data,graphTitle,yTitle,xaxis,category,valueField,thresh
                        "",
                        human_numbers(total.by.x)
         ),
-        y = end.Bar+threshold
+        y = end.Bar+ifelse(total.by.x >0,threshold,-threshold)
       ),
     size = fontSize,
     color = "#4e4d47",
@@ -785,7 +785,7 @@ waterFallGraph<-function(data,graphTitle,yTitle,xaxis,category,valueField,thresh
     # \_Theme options to make it look like the original plot ----
   theme(
     text = element_text(size = fontSize*4, color = "#4e4d47"),
-    axis.text.x = element_text(angle=25,size = fontSize*3, color = "#4e4d47", face = "bold", vjust=0.7, hjust=0.5),
+    axis.text.x = element_text(angle=xangle,size = fontSize*3, color = "#4e4d47", face = "bold", vjust=0.7, hjust=0.5),
     axis.text.y = element_text(size = fontSize*3, color = "#4e4d47", face = "bold", vjust=0.5, hjust=1),
     #axis.text.y = element_text(margin = margin(r = 0.3, unit = "cm")),
     axis.ticks.x =
@@ -805,7 +805,8 @@ waterFallGraph<-function(data,graphTitle,yTitle,xaxis,category,valueField,thresh
                                       face = "bold",
                                       margin = margin(l = 0.25, unit = "cm")
     ),
-    legend.title =       element_blank()
+    legend.title =       element_blank(),
+    legend.position = "bottom"
   ) +
     scale_y_continuous(labels = human_numbers) +
     labs(size = fontSize*4,x="xlabel", y=getg11nSafe(yTitle), title=getg11nSafe(graphTitle))

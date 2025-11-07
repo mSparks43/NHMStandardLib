@@ -54,7 +54,7 @@ getg11n<-function(textSearch){
     stop(CONCAT("No g11n for ",textSearch,"lang=",pkg.env$g11n))
   return(iRow$text)
 }
-
+#' @export
 getg11nSafeVector<-function(vectortextSearch){
   if(!is.vector(vectortextSearch))
     stop("not a vector")
@@ -63,6 +63,7 @@ getg11nSafeVector<-function(vectortextSearch){
   }
   return(vectortextSearch)
 }
+#' @export
 getg11nSafe<-function(textSearch){
   print(paste0("search ",textSearch))
   id<-getg11nID(textSearch)
@@ -74,8 +75,55 @@ getg11nSafe<-function(textSearch){
   return(iRow$text)
 }
 #' @export
+g11n_numbers <- function(x = NULL, signif = 1, smbl =""){
+  if(is.null(x))
+    return(NULL)
+  if(all(is.numeric(x))){
+    if(pkg.env$g11n=="sr"){
+      rV<-format(round(x,digits=signif),big.mark=".",decimal.mark=",")
+      return(rV)
+    }
+    else if(pkg.env$g11n=="en")
+    {
+      return(format(round(x,digits=signif),big.mark=",",decimal.mark="."))
+    }
+    else if(pkg.env$g11n=="pl"){
+      return(format(round(x,digits=signif),big.mark=" ",decimal.mark=","))
+    }
+    else
+      stop("unknown g11n")
+  }
+  x<-x%>%mutate_if(can_numeric, as.numeric)
+  x<-x%>%mutate_if(is.numeric, round,digits=signif)
+  x<-x%>%mutate_if(not_can_numeric, getg11nSafeVector)
+  if(pkg.env$g11n=="sr"){
+    x<-x%>%mutate_if(is.numeric, format,big.mark=".",decimal.mark=",")
+  }
+  else if(pkg.env$g11n=="en")
+  {
+    x<-x%>%mutate_if(is.numeric, format,big.mark=",",decimal.mark=".")
+  }
+  else if(pkg.env$g11n=="pl"){
+    x<-x%>%mutate_if(is.numeric, format,big.mark=" ",decimal.mark=",")
+  }
+  else
+    stop("unknown g11n")
+  names(x)<-str_replace_all(names(x),"_"," ")
+  names(x)<-str_replace_all(names(x),"\\."," ")
+  names(x)<-getg11nSafeVector(names(x))
+  return(x)
+}
+
+#' @export
 importg11n<-function(file_ndjson){
   pkg.env$g11n_data<-data.frame()
   v<-lapply(readLines(file_ndjson, n=-1, warn=FALSE), addg11n)
 
+}
+#' @export
+importxlg11n<-function(excel_filename){
+  tTable <- read_excel(excel_filename,sheet=1)
+  for(i in 1:nrow(tTable)){
+    addg11n(toJSON(as.list(tTable[i,])))
+  }
 }

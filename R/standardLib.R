@@ -101,13 +101,13 @@ excel_doc <- function(filename,y=0,sheet=1,col = TRUE){
 
 #' @export
 startWorkBook <- function(){
-  wb<-createWorkbook(type="xlsx")
-  TABLE_ROWNAMES_STYLE <- CellStyle(wb) + Font(wb, isBold=TRUE)
-  TABLE_COLNAMES_STYLE <- CellStyle(wb) + Font(wb, isBold=TRUE) +
-    Alignment(wrapText=TRUE, horizontal="ALIGN_CENTER") +
-    Border(color="black", position=c("TOP", "BOTTOM"),
+  pkg.env$workbook<-xlsx::createWorkbook(type="xlsx")
+  TABLE_ROWNAMES_STYLE <- xlsx::CellStyle(pkg.env$workbook) + xlsx::Font(pkg.env$workbook, isBold=TRUE)
+  TABLE_COLNAMES_STYLE <- xlsx::CellStyle(pkg.env$workbook) + xlsx::Font(pkg.env$workbook, isBold=TRUE) +
+    xlsx::Alignment(wrapText=TRUE, horizontal="ALIGN_CENTER") +
+    xlsx::Border(color="black", position=c("TOP", "BOTTOM"),
            pen=c("BORDER_THIN", "BORDER_THICK"))
-  return (wb)
+
 }
 
 #' Convert Excel column letters into numbers
@@ -156,7 +156,7 @@ SpreadsheetNumbersToLetters <- function(col,row){
 #' @export
 putExcel<- function(dFrame,sheet,x = 1,y = 1,nameCols=TRUE){
   createWS <- TRUE
-  workSheets<-getSheets(workbook)
+  workSheets<-xlsx::getSheets(pkg.env$workbook)
   for (sheetName in names(workSheets)){
     if (sheetName == sheet) {
       createWS <- FALSE
@@ -165,20 +165,20 @@ putExcel<- function(dFrame,sheet,x = 1,y = 1,nameCols=TRUE){
   if(createWS){
     #addWorksheet(workbook, sheet)
     print(CONCAT("Create sheet:",sheet))
-    createSheet(workbook, sheetName = sheet)
+    xlsx::createSheet(pkg.env$workbook, sheetName = sheet)
   }
-  workSheets<-getSheets(workbook)
-  TABLE_ROWNAMES_STYLE <- CellStyle(workbook) + Font(workbook, isBold=TRUE)
-  TABLE_COLNAMES_STYLE <- CellStyle(workbook) + Font(workbook, isBold=TRUE) +
-    Alignment(wrapText=TRUE, horizontal="ALIGN_CENTER") +
-    Border(color="black", position=c("TOP", "BOTTOM"),
+  workSheets<-xlsx::getSheets(pkg.env$workbook)
+  TABLE_ROWNAMES_STYLE <- xlsx::CellStyle(pkg.env$workbook) + xlsx::Font(pkg.env$workbook, isBold=TRUE)
+  TABLE_COLNAMES_STYLE <- xlsx::CellStyle(pkg.env$workbook) + xlsx::Font(pkg.env$workbook, isBold=TRUE) +
+    xlsx::Alignment(wrapText=TRUE, horizontal="ALIGN_CENTER") +
+    xlsx::Border(color="black", position=c("TOP", "BOTTOM"),
            pen=c("BORDER_THIN", "BORDER_THICK"))
   #writeData(workbook, sheet, dFrame, startRow = y, startCol = x,colNames=nameCols)
-  addDataFrame(dFrame, workSheets[[sheet]], startRow=y, startColumn=x,
+  xlsx::addDataFrame(dFrame, workSheets[[sheet]], startRow=y, startColumn=x,
                colnamesStyle = TABLE_COLNAMES_STYLE,
                rownamesStyle = TABLE_ROWNAMES_STYLE)
   # Change column width
-  setColumnWidth(workSheets[[sheet]], colIndex=c(1:ncol(state.x77)), colWidth=11)
+  xlsx::setColumnWidth(workSheets[[sheet]], colIndex=c(1:ncol(state.x77)), colWidth=11)
   #setRowHeight(workSheets[[sheet]], rows=c(1), inPoints=22)
 }
 
@@ -187,7 +187,7 @@ saveExcel<-function(filename){
   setwd(baseDir)
   setwd(outputDir)
   print(CONCAT("Saving Excel file:",baseDir,outputDir,filename))
-  saveWorkbook(workbook, file = filename)
+  xlsx::saveWorkbook(pkg.env$workbook, file = filename)
   setwd(baseDir)
 }
 
@@ -346,8 +346,16 @@ human_numbers <- function(x = NULL, smbl ="", signif = 1){
     return(human_numbers_sr(x,smbl,signif))
   else if(pkg.env$g11n=="en")
     return(human_numbers_en(x,smbl,signif))
+  else if(pkg.env$g11n=="pl")
+    return(human_numbers_pl(x,smbl,signif))
   else
     stop("unknown g11n")
+}
+can_numeric<-function(x){
+  return(suppressWarnings(all(!is.na(as.numeric(x)))))
+}
+not_can_numeric<-function(x){
+  return(suppressWarnings(!all(!is.na(as.numeric(x)))))
 }
 human_numbers_sr <- function(x = NULL, smbl ="", signif = 1){
   humanity <- function(y){
@@ -408,6 +416,38 @@ human_numbers_en <- function(x = NULL, smbl ="", signif = 1){
         paste0 (y_is_positive, smbl, b ,"bn")
       } else {
         paste0 (y_is_positive, smbl,  comma(tn), "tn")
+      }
+    } else if (is.na(y) | is.null(y)){
+      "-"
+    }
+  }
+
+  sapply(x,humanity)
+}
+human_numbers_pl <- function(x = NULL, smbl ="", signif = 1){
+  humanity <- function(y){
+
+    if (!is.na(y)){
+      tn <- round(abs(y) / 1e12, signif)
+      b <- round(abs(y) / 1e9, signif)
+      m <- round(abs(y) / 1e6, signif)
+      k <- round(abs(y) / 1e3, signif)
+
+      if ( y >= 0 ){
+        y_is_positive <- ""
+      } else {
+        y_is_positive <- "-"
+      }
+
+      if ( m < 1){
+        paste0 (y_is_positive, smbl, format(abs(y), big.mark=" ",decimal.mark=","))
+      } else if (b < 1){
+        paste0 (y_is_positive, smbl, format(m, big.mark=" ",decimal.mark=",") ," tys.")
+      }else if(tn < 1){
+        #paste0 (y_is_positive, smbl, b ,"bn")
+        paste0 (y_is_positive, smbl, format(b, big.mark=" ",decimal.mark=",") ," mln.")
+      } else {
+        paste0 (y_is_positive, smbl,  format(tn, big.mark=" ",decimal.mark=","), "mld.")
       }
     } else if (is.na(y) | is.null(y)){
       "-"
@@ -512,4 +552,30 @@ writePlot <- function(fileName,plotFunction,use.print=TRUE,aspectRatio=0.5){
     plotFunction
   dev.off()
   setwd(baseDir)
+}
+#' @export
+theme_zem <- function(x, ...) {
+  x <- line_spacing(x, space = 2, part = "all")
+  x <- align(x, align = "center", part = "all")
+  x <- valign(x, valign = "center", part = "all")
+  fix_border_issues(x)
+}
+
+#' @export
+get_flextable<-function(df,caption,table_width=8,signif=2,pad=3,fontsz=8,usebooktabs=TRUE,useZemTheme=TRUE,usevanilla=FALSE){
+  ft <- flextable(g11n_numbers(df,signif))
+  ft <- set_caption(ft,caption=getg11n(caption))
+  ft <- ftExtra::colformat_md(ft)
+  if(usevanilla)
+    ft <- theme_vanilla(ft)
+  if(usebooktabs)
+    ft <- theme_booktabs(ft)
+  if(useZemTheme)
+    ft <- theme_zem(ft)
+  ft<- padding(ft,padding =pad,part="all")
+  ft <- fontsize(ft, size = fontsz,part="all")
+  ft <- font(ft, part = "all", fontname = "Calibri")
+  ft <- autofit(ft)
+  ft <- width(ft, width = dim(ft)$widths*table_width /(flextable_dim(ft)$widths))
+  return(ft)
 }

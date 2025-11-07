@@ -11,6 +11,8 @@ getg11nID<-function(textSearch){
   iRow<-pkg.env$g11n_data[pkg.env$g11n_data$text==textSearch,]
   if(nrow(iRow)==0)
     return(-1)
+  if(nrow(iRow)>1)
+    return(-1)
   return(iRow$id)
 }
 
@@ -43,6 +45,7 @@ addg11n<-function(langJSON){
 
 #' @export
 getg11n<-function(textSearch){
+
   id<-getg11nID(textSearch)
   if(id<=0)
     stop(CONCAT("No g11n for ",textSearch))
@@ -61,6 +64,7 @@ getg11nSafeVector<-function(vectortextSearch){
   return(vectortextSearch)
 }
 getg11nSafe<-function(textSearch){
+  print(paste0("search ",textSearch))
   id<-getg11nID(textSearch)
   if(is.na(id)|| id<=0)
     return(textSearch)

@@ -65,7 +65,7 @@ getg11nSafeVector<-function(vectortextSearch){
 }
 #' @export
 getg11nSafe<-function(textSearch){
-  print(paste0("search ",textSearch))
+  #print(paste0("search ",textSearch))
   id<-getg11nID(textSearch)
   if(is.na(id)|| id<=0)
     return(textSearch)

@@ -544,7 +544,7 @@ barchartPlot <- function(dataSrc,t_title,xlabel,ylabel,xdataName,ydataName){
 writePlot <- function(fileName,plotFunction,use.print=TRUE,aspectRatio=0.5){
   folderInit()
   setwd(graphDir)
-  savename<-paste(fileName,".png")
+  savename<-paste0(fileName,".png")
   png(savename,width=300,height=(300*aspectRatio), pointsize=20, units = "mm", res = 300)
   if(use.print)
     print(plotFunction)

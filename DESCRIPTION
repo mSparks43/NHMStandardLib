@@ -10,8 +10,6 @@ License: All rights reserved
 Encoding: UTF-8
 LazyData: true
 Depends:
-  xlsx,
-  openxlsx,
   stringr,
   DBI,
   RSQLite,

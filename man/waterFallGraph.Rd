@@ -11,7 +11,7 @@ waterFallGraph(
   xaxis,
   category,
   valueField,
-  threshold = 80000000,
+  threshold = 8e+07,
   fontSize = 3,
   xangle = 25
 )

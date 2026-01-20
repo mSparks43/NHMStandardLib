@@ -136,7 +136,7 @@ SpreadsheetLettersToNumbers <- function(s){
     }
 
   }
-  column_number <- col2int(cString)
+  column_number <- openxlsx::col2int(cString)
   return(c(column_number,as.numeric(rNum)))
 }
 

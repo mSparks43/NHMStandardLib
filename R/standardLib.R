@@ -3,7 +3,6 @@
 # Zem Solutions, all rights reserved.
 # use `rm(list=ls());roxygen2::roxygenise()` to build
 
-
 pkg.env <- new.env()
 ## base Functions
 

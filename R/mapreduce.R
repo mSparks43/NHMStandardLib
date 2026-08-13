@@ -27,27 +27,82 @@ mapReduce_map_toFileList<-function(inData){
 mapReduce_map_fromtoFileList<-function(fileList,mapFunction){
   gc()
   retFileList<-list()
-  for(i in fileList){
+  if (is.character(fileList) &&
+      length(fileList) == 1L &&
+      grepl("\\.zip$", fileList, ignore.case = TRUE)) {
 
-    dataS<-readRDS(i)
-    #unlink(i)
-    message(CONCAT("mapReduce_map Process ",i," ",length(dataS)))
-    #iLV<-parLapply(cl,dataS,fun=mapFunction)
-    iLV<-mclapply(dataS, mapFunction,mc.cores = pkg.env$numCores)
-    message(CONCAT("mapReduce_map compressList"))
-    iretVal<-list(iLV)[[1]]
-    #iretVal<-list()
-    gc()
-    message(CONCAT("mapReduce_map cleaning ",length(iretVal)))
-    iretVal<-list_drop_empty(iretVal)
-    message(CONCAT("mapReduce_map cleaned ",length(iretVal)))
-    gc()
-    #retVal<-append(retVal,iretVal)
-    message(CONCAT("mapReduce_map now ",length(iretVal)))
-    file<-tempfile(tmpdir=tempMRDir)
-    saveRDS(iretVal,file)
-    message(CONCAT("mapReduce_map create new tmpdata from ",i," to ",file))
-    retFileList<-append(retFileList,file)
+    files <- utils::unzip(
+      fileList,
+      list = TRUE
+    )$Name
+
+    files <- sort(
+      files[grepl("\\.rds$", files, ignore.case = TRUE)]
+    )
+
+    if (length(files) == 0L)
+      stop("No RDS files found in ZIP")
+
+    # Always starts at the first RDS
+    for (i in seq_along(files)) {
+
+      message(
+        "Processing ", i, " / ", length(files),
+        ": ", basename(files[i])
+      )
+
+      tempDir <- tempfile("nhm_")
+      dir.create(tempDir)
+
+      on.exit(
+        unlink(tempDir, recursive = TRUE),
+        add = TRUE
+      )
+
+      utils::unzip(
+        fileList,
+        files = files[i],
+        exdir = tempDir
+      )
+
+      data <- readRDS(
+        file.path(tempDir, basename(files[i]))
+      )
+
+      #mapFunction(data)
+      mapReduce_map(data,mapFunction)
+      rm(data)
+
+      # Remove this chunk before moving to the next
+      unlink(tempDir, recursive = TRUE)
+
+      gc()
+    }
+
+    # Vector of RDS files
+  } else {
+    for(i in fileList){
+
+      dataS<-readRDS(i)
+      #unlink(i)
+      message(CONCAT("mapReduce_map Process ",i," ",length(dataS)))
+      #iLV<-parLapply(cl,dataS,fun=mapFunction)
+      iLV<-mclapply(dataS, mapFunction,mc.cores = pkg.env$numCores)
+      message(CONCAT("mapReduce_map compressList"))
+      iretVal<-list(iLV)[[1]]
+      #iretVal<-list()
+      gc()
+      message(CONCAT("mapReduce_map cleaning ",length(iretVal)))
+      iretVal<-list_drop_empty(iretVal)
+      message(CONCAT("mapReduce_map cleaned ",length(iretVal)))
+      gc()
+      #retVal<-append(retVal,iretVal)
+      message(CONCAT("mapReduce_map now ",length(iretVal)))
+      file<-tempfile(tmpdir=tempMRDir)
+      saveRDS(iretVal,file)
+      message(CONCAT("mapReduce_map create new tmpdata from ",i," to ",file))
+      retFileList<-append(retFileList,file)
+    }
   }
   return (retFileList)
 }

@@ -68,6 +68,135 @@ importNHMDataBase<-function(dbDir,dbName){
   return(raw_data)
 }
 
+## Database functions
+
+#' import an NHM database into R
+#' @param dbDir the directory to find the database
+#' @param dbName the ID of the patient database
+#' @return a character array containing a zip filename of files pointing to patient record data in json
+#'
+#' @export
+importNHMDataBaseFiles <- function(dbDir, dbName, outputDir = dbDir,
+                                                     chunkSize = 100000) {
+
+  dbFile <- file.path(
+    dbDir,
+    paste0("openAccess_NHM_Patients_", dbName, ".db")
+  )
+
+  dir.create(outputDir, recursive = TRUE, showWarnings = FALSE)
+
+  connection <- DBI::dbConnect(
+    RSQLite::SQLite(),
+    dbFile
+  )
+
+  on.exit(DBI::dbDisconnect(connection), add = TRUE)
+
+  # Temporary directory for individual RDS files
+  tempDir <- file.path(
+    outputDir,
+    paste0(dbName, "_rds")
+  )
+
+  dir.create(
+    tempDir,
+    recursive = TRUE,
+    showWarnings = FALSE
+  )
+
+  zipFile <- file.path(
+    outputDir,
+    paste0(dbName, ".zip")
+  )
+
+  if (file.exists(zipFile))
+    file.remove(zipFile)
+
+  lastId <- 0L
+  fileNumber <- 1L
+
+  repeat {
+
+    message("Reading chunk ", fileNumber,
+            " (id > ", lastId, ")")
+
+    # Use the indexed PRIMARY KEY rather than OFFSET
+    query <- sprintf(
+      paste(
+        "SELECT id, data",
+        "FROM datatable",
+        "WHERE id > %d",
+        "ORDER BY id",
+        "LIMIT %d"
+      ),
+      lastId,
+      chunkSize
+    )
+
+    chunk <- DBI::dbGetQuery(connection, query)
+
+    # No more rows
+    if (nrow(chunk) == 0) {
+      rm(chunk)
+      break
+    }
+
+    # Extract data column
+    raw_data <- chunk$data
+
+    # Save RDS
+    rdsFile <- file.path(
+      tempDir,
+      sprintf("%s_%05d.rds", dbName, fileNumber)
+    )
+
+    saveRDS(raw_data, rdsFile)
+
+    # Add RDS to ZIP
+    status <- system2(
+      "zip",
+      c(
+        "-j",
+        shQuote(zipFile),
+        shQuote(rdsFile)
+      ),
+      stdout = FALSE,
+      stderr = FALSE
+    )
+
+    if (status != 0) {
+      stop("Failed to add ", rdsFile, " to ZIP")
+    }
+
+    # Remember the last ID
+    lastId <- tail(chunk$id, 1)
+
+    nRead <- nrow(chunk)
+
+    message(
+      "  Read ", nRead,
+      " rows; last id = ", lastId
+    )
+
+    rm(chunk, raw_data)
+    gc()
+
+    # If fewer than chunkSize were returned, we're finished
+    if (nRead < chunkSize)
+      break
+
+    fileNumber <- fileNumber + 1L
+  }
+
+  # Remove temporary RDS files
+  unlink(tempDir, recursive = TRUE)
+
+  message("Created: ", zipFile)
+
+  return(zipFile)
+}
+
 #' @export
 convertIntervention <- function(value,controlName,controlMatch,interventionName,interventionMatch){
   rowIsIntervention=F

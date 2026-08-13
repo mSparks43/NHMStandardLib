@@ -24,6 +24,7 @@ mapReduce_map_toFileList<-function(inData){
 }
 
 #' @export
+
 mapReduce_map_fromtoFileList<-function(fileList,mapFunction){
   gc()
   retFileList<-list()
@@ -44,7 +45,7 @@ mapReduce_map_fromtoFileList<-function(fileList,mapFunction){
       stop("No RDS files found in ZIP")
 
     # Always starts at the first RDS
-    for (i in seq_along(files)) {
+    for (i in seq_along(files)) { #c(1:10)) {  #
 
       message(
         "Processing ", i, " / ", length(files),
@@ -70,9 +71,12 @@ mapReduce_map_fromtoFileList<-function(fileList,mapFunction){
       )
 
       #mapFunction(data)
-      mapReduce_map(data,mapFunction)
+      iretVal<-mapReduce_map(data,mapFunction)
       rm(data)
-
+      file<-tempfile(tmpdir=tempMRDir)
+      saveRDS(iretVal,file)
+      message(CONCAT("mapReduce_map create new tmpdata from ",i," to ",file))
+      retFileList<-append(retFileList,file)
       # Remove this chunk before moving to the next
       unlink(tempDir, recursive = TRUE)
 
@@ -106,7 +110,6 @@ mapReduce_map_fromtoFileList<-function(fileList,mapFunction){
   }
   return (retFileList)
 }
-
 #' @export
 mapReduce_unlinkFileList<-function(fileList){
   for(i in fileList){
